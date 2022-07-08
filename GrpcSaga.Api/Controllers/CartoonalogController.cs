@@ -19,28 +19,41 @@ public class CartoonalogController : ControllerBase
         _logger = logger;
     }
 
+    // CartoonViewModel
     [HttpGet(Name = "GetCartoon")]
-    public async Task<CartoonViewModel> GetCartoon()
+    public async Task<IActionResult> GetCartoon(int id)
     {
-        var request = new ShowGetSingleRequest
+        if (id <= 0)
         {
-            Id = 1
-        };
+            return BadRequest();
+        }
 
-        var channel = GrpcChannel.ForAddress("https://localhost:7227");
-        var client = channel.CreateGrpcService<IShowService>();
-
-        var response = await client.GetShow(request);
-
-        var viewModel = new CartoonViewModel
+        try
         {
-            Id = response.Id,
-            Name = response.Name,
-            YearBegin = response.YearBegin,
-            YearEnd = response.YearEnd,
-            StudioId = response.StudioId
-        };
+            var request = new ShowGetSingleRequest
+            {
+                Id = id
+            };
 
-        return viewModel;
+            var channel = GrpcChannel.ForAddress("https://localhost:7227");
+            var client = channel.CreateGrpcService<IShowService>();
+
+            var response = await client.GetShow(request);
+
+            var viewModel = new CartoonViewModel
+            {
+                Id = response.Id,
+                Name = response.Name,
+                YearBegin = response.YearBegin,
+                YearEnd = response.YearEnd,
+                StudioId = response.StudioId
+            };
+
+            return Ok(viewModel);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.ToString());
+        }
     }
 }
