@@ -19,8 +19,6 @@ public class CartoonController : ControllerBase
         _logger = logger;
     }
 
-    // CartoonViewModel
-    //[HttpGet(Name = "Cartoon/GetCartoonById")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCartoonById(int id)
     {
