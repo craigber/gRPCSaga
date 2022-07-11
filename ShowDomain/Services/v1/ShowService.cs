@@ -11,7 +11,9 @@ public class ShowService : IShowService
     {
         if (request.Id <= 0 || request.Id > 2)
         {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Id"));
+            var correlationId = Guid.NewGuid();
+            // Log issue and correlation Id
+            throw new RpcException(new Status(StatusCode.NotFound, $"Id: {correlationId}"));
         }
 
         try
@@ -37,7 +39,9 @@ public class ShowService : IShowService
         }
         catch (Exception ex)
         {
-            throw new RpcException(new Status(StatusCode.Unknown, ex.Message));
+            var correlationId = Guid.NewGuid();
+            // Log issue and correlation Id
+            throw new RpcException(new Status(StatusCode.Unknown, $"Id: {correlationId}"));
         }
     }
 }

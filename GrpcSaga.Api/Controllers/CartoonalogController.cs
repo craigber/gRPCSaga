@@ -20,12 +20,14 @@ public class CartoonalogController : ControllerBase
     }
 
     // CartoonViewModel
-    [HttpGet(Name = "GetCartoon")]
-    public async Task<IActionResult> GetCartoon(int id)
+    [HttpGet(Name = "GetCartoonById")]
+    public async Task<IActionResult> GetCartoonById(int id)
     {
         if (id <= 0)
         {
-            return BadRequest();
+            var correlationId = Guid.NewGuid();
+            // log issue and correlation Id
+            return BadRequest($"Id: {correlationId}");
         }
 
         try
@@ -38,22 +40,22 @@ public class CartoonalogController : ControllerBase
             var channel = GrpcChannel.ForAddress("https://localhost:7227");
             var client = channel.CreateGrpcService<IShowService>();
 
-            var response = await client.GetShow(request);
+            var getShowResponse = await client.GetShow(request);
 
-            var viewModel = new CartoonViewModel
+            var viewModelResponse = new CartoonViewModel
             {
-                Id = response.Id,
-                Name = response.Name,
-                YearBegin = response.YearBegin,
-                YearEnd = response.YearEnd,
-                StudioId = response.StudioId
+                Id = getShowResponse.Id,
+                Name = getShowResponse.Name,
+                YearBegin = getShowResponse.YearBegin,
+                YearEnd = getShowResponse.YearEnd,
+                StudioId = getShowResponse.StudioId
             };
 
-            return Ok(viewModel);
+            return Ok(viewModelResponse);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.ToString());
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }
