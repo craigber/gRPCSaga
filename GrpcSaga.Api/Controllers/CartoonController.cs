@@ -4,6 +4,7 @@ using ProtoBuf.Grpc.Client;
 using ShowDomain.Shared.v1.Contracts;
 using ShowDomain.Shared.v1.Interfaces;
 using GrpcSaga.Api.ViewModels;
+using GrpcSaga.Api.Services;
 
 namespace GrpcSaga.Api.Controllers;
 
@@ -13,10 +14,12 @@ public class CartoonController : ControllerBase
 {
     
     private readonly ILogger<CartoonController> _logger;
+    private readonly ICartoonService _cartoonService;
 
-    public CartoonController(ILogger<CartoonController> logger)
+    public CartoonController(ILogger<CartoonController> logger, ICartoonService cartoonService)
     {
         _logger = logger;
+        _cartoonService = cartoonService;
     }
 
     [HttpGet("{id}")]
@@ -31,29 +34,19 @@ public class CartoonController : ControllerBase
 
         try
         {
-            var request = new ShowGetSingleRequest
+            var viewModelResponse = await _cartoonService.GetCartoonByIdAsync(id); 
+
+            if (viewModelResponse == null)
             {
-                Id = id
-            };
-
-            var channel = GrpcChannel.ForAddress("https://localhost:7227");
-            var client = channel.CreateGrpcService<IShowService>();
-
-            var getShowResponse = await client.GetShow(request);
-
-            var viewModelResponse = new CartoonViewModel
-            {
-                Id = getShowResponse.Id,
-                Name = getShowResponse.Name,
-                YearBegin = getShowResponse.YearBegin,
-                YearEnd = getShowResponse.YearEnd,
-                StudioId = getShowResponse.StudioId
-            };
-
+                var correlationId = Guid.NewGuid();
+                // log Not Found
+                return NotFound(($"Id: {correlationId}"));
+            }
             return Ok(viewModelResponse);
         }
         catch (Exception ex)
         {
+            // Log exception info
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
