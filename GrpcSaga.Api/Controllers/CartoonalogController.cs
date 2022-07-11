@@ -9,18 +9,19 @@ namespace GrpcSaga.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CartoonalogController : ControllerBase
+public class CartoonController : ControllerBase
 {
     
-    private readonly ILogger<CartoonalogController> _logger;
+    private readonly ILogger<CartoonController> _logger;
 
-    public CartoonalogController(ILogger<CartoonalogController> logger)
+    public CartoonController(ILogger<CartoonController> logger)
     {
         _logger = logger;
     }
 
     // CartoonViewModel
-    [HttpGet(Name = "GetCartoonById")]
+    //[HttpGet(Name = "Cartoon/GetCartoonById")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetCartoonById(int id)
     {
         if (id <= 0)
