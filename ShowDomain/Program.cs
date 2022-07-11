@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
-using ShowDomain.Service.Services.v1;
+using CartoonDomain.Service.Services.v1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +20,7 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGrpcService<ShowService>();
+    endpoints.MapGrpcService<CartoonDomainService>();
 });
 
 // Configure the HTTP request pipeline.

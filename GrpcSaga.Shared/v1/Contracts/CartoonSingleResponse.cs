@@ -1,15 +1,15 @@
 ﻿using ProtoBuf;
 using System.Runtime.Serialization;
 
-namespace ShowDomain.Shared.v1.Contracts;
+namespace CartoonDomain.Shared.v1.Contracts;
 
 [ProtoContract]
-public class ShowModelReply
+public class CartoonSingleResponse
 {
     [ProtoMember(1)]
     public int Id { get; set; }
 
-    [ProtoMember(2)] 
+    [ProtoMember(2)]
     public string Name { get; set; }
 
     [ProtoMember(3)]

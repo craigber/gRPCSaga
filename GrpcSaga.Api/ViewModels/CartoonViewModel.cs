@@ -1,4 +1,4 @@
-﻿namespace GrpcSaga.Api.ViewModels;
+﻿namespace Cartoonalogue.Api.ViewModels;
 
 public class CartoonViewModel
 {

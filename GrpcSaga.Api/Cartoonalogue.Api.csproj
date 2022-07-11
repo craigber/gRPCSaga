@@ -8,12 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.Net.Client" Version="2.47.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.47.0" />
     <PackageReference Include="protobuf-net.Grpc" Version="1.0.152" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GrpcSaga.Shared\ShowDomain.Shared.csproj" />
+    <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
   </ItemGroup>
 
 </Project>

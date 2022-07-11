@@ -1,6 +1,6 @@
-﻿using GrpcSaga.Api.ViewModels;
+﻿using Cartoonalogue.Api.ViewModels;
 
-namespace GrpcSaga.Api.Services;
+namespace Cartoonalogue.Api.Services;
 
 public interface ICartoonService
 {

@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
-using ShowDomain.Shared.v1.Contracts;
-using ShowDomain.Shared.v1.Interfaces;
-using GrpcSaga.Api.ViewModels;
-using GrpcSaga.Api.Services;
+using CartoonDomain.Shared.v1.Contracts;
+using CartoonDomain.Shared.v1.Interfaces;
+using Cartoonalogue.Api.ViewModels;
+using Cartoonalogue.Api.Services;
 
-namespace GrpcSaga.Api.Controllers;
+namespace Cartoonalogue.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

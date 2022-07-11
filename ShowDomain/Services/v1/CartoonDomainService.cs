@@ -1,13 +1,13 @@
 ﻿using Grpc.Core;
 using ProtoBuf.Grpc;
-using ShowDomain.Shared.v1.Interfaces;
-using ShowDomain.Shared.v1.Contracts;
+using CartoonDomain.Shared.v1.Interfaces;
+using CartoonDomain.Shared.v1.Contracts;
 
-namespace ShowDomain.Service.Services.v1;
+namespace CartoonDomain.Service.Services.v1;
 
-public class ShowService : IShowService
+public class CartoonDomainService : ICartoonDomainService
 {
-    public Task<ShowModelReply> GetShow(ShowGetSingleRequest request, CallContext context = default)
+    public Task<CartoonSingleResponse> GetShow(CartoonSingleRequest request, CallContext context = default)
     {
         if (request.Id <= 0 || request.Id > 2)
         {
@@ -18,8 +18,8 @@ public class ShowService : IShowService
 
         try
         {
-            var shows = new List<ShowModelReply>();
-            shows.Add(new ShowModelReply
+            var shows = new List<CartoonSingleResponse>();
+            shows.Add(new CartoonSingleResponse
             {
                 Id = 1,
                 Name = "Rocky and Friends",
@@ -27,7 +27,7 @@ public class ShowService : IShowService
                 YearEnd = 1963
             });
 
-            shows.Add(new ShowModelReply
+            shows.Add(new CartoonSingleResponse
             {
                 Id = 2,
                 Name = "The Simpsons",

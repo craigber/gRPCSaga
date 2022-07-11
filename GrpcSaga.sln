@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowDomain.Service", "ShowDomain\ShowDomain.Service.csproj", "{0F85758A-77A0-41C8-867E-304B69DB8C2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Service", "ShowDomain\CartoonDomain.Service.csproj", "{0F85758A-77A0-41C8-867E-304B69DB8C2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcSaga.Api", "GrpcSaga.Api\GrpcSaga.Api.csproj", "{9C711814-F689-4327-9C47-CA41B049653E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cartoonalogue.Api", "GrpcSaga.Api\Cartoonalogue.Api.csproj", "{9C711814-F689-4327-9C47-CA41B049653E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowDomain.Shared", "GrpcSaga.Shared\ShowDomain.Shared.csproj", "{6DEACC1E-26D8-4E6D-8153-83508B9CCD1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Shared", "GrpcSaga.Shared\CartoonDomain.Shared.csproj", "{6DEACC1E-26D8-4E6D-8153-83508B9CCD1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

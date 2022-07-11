@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GrpcSaga.Shared\ShowDomain.Shared.csproj" />
+    <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
