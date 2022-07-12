@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
+    <ProjectReference Include="..\ShowDomain\CartoonDomain.Service.csproj" />
   </ItemGroup>
 
 </Project>

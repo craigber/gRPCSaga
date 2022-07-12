@@ -3,6 +3,7 @@ using CartoonDomain.Shared.Queries.v1.Contracts;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
+using CartoonDomain.Service.Data;
 
 namespace Cartoonalogue.Api.Services;
 
@@ -28,7 +29,7 @@ public class CartoonService: ICartoonService
             {
                 Id = id
             };
-                       
+
             var getShowResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(request);
 
             if (getShowResponse == null)
