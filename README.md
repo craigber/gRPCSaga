@@ -16,5 +16,10 @@ There are three projects:
 ## gRPC Information
 Most of the gRPC examples you see use .proto files that are ingested at compile time and contract files are spit out by the .Net compiler. The gRPCSaga example is built with a code-first pattern. There are no .proto files.
 
+Useful links:
+- [Link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-6.0&tabs=visual-studio "Offical Microsoft docs").
+- [Link](https://github.com/grpc/grpc-dotnet/tree/master/examplesg "RPC-dotnet examples"). Check out the Coder example for code-first.
+- [Link](https://protobuf-net.github.io/protobuf-net.Grpc/gettingstarted "protobuf-net.Grpc"). The offical documentation for the code-first library.
+
 ## Data access
 A local install of SQL Server is currently used for the example database. A future update will use SQLite. The CQRS pattern is used to separate queries and commands. Also, because (in a later version of gRPCSaga) multiple domains will be updated, a saga is used to ensure transactional consistancy across the domains.
