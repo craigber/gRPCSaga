@@ -17,7 +17,7 @@ There are three projects:
 Most of the gRPC examples you see use .proto files that are ingested at compile time and contract files are spit out by the .Net compiler. The gRPCSaga example is built with a code-first pattern. There are no .proto files.
 
 Useful links:
-- [Link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-6.0&tabs=visual-studio "Offical Microsoft docs").
+- <https://docs.microsoft.com/en-us/aspnet/core/tutorials/grpc/grpc-start?view=aspnetcore-6.0&tabs=visual-studio Offical Microsoft docs>.
 - [Link](https://github.com/grpc/grpc-dotnet/tree/master/examplesg "RPC-dotnet examples"). Check out the Coder example for code-first.
 - [Link](https://protobuf-net.github.io/protobuf-net.Grpc/gettingstarted "protobuf-net.Grpc"). The offical documentation for the code-first library.
 
