@@ -61,4 +61,44 @@ public class CartoonService: ICartoonService
             throw new Exception($"Id: {correlationId}");
         }
     }
+
+    public async Task<IList<CartoonViewModel>> GetAllCartoonsAsync()
+    {
+        try
+        {
+            var getShowResponse = await _cartoonDomainQueryService.GetAllCartoonsAsync();
+
+            if (getShowResponse == null || getShowResponse.Cartoons.Count() == 0)
+            {
+                // The requested id is not found
+                var correlationId = Guid.NewGuid();
+                // Write Not Found, requested Id, and correlation Id to log
+                return null;
+            }
+
+            var cartoons = new List<CartoonViewModel>();
+            foreach (var c in getShowResponse.Cartoons)
+            {
+                cartoons.Add(new CartoonViewModel
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    YearBegin = c.YearBegin,
+                    YearEnd = c.YearEnd,
+                    Description = c.Description,
+                    Rating = c.Rating,
+                    StudioId = c.StudioId
+                });
+            }
+            return cartoons;
+        }
+        catch (Exception ex)
+        {
+            // TODO: catch the RpcException and handle it correctly
+
+            var correlationId = Guid.NewGuid();
+            // write exception and correlation Id to log
+            throw new Exception($"Id: {correlationId}");
+        }
+    }
 }

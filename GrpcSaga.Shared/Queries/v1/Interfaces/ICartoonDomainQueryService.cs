@@ -10,4 +10,7 @@ public interface ICartoonDomainQueryService
 {
     [OperationContract]
     Task<CartoonSingleResponse> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default);
+
+    [OperationContract]
+    Task<CartoonMultipleResponse> GetAllCartoonsAsync(CallContext context = default);
 }

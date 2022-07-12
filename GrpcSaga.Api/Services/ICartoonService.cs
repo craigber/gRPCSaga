@@ -5,4 +5,5 @@ namespace Cartoonalogue.Api.Services;
 public interface ICartoonService
 {
     public Task<CartoonViewModel> GetCartoonByIdAsync(int id);
+    public Task<IList<CartoonViewModel>> GetAllCartoonsAsync();
 }

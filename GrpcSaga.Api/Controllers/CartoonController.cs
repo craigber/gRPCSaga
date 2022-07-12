@@ -50,4 +50,27 @@ public class CartoonController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+
+    [HttpGet]
+    [Route("GetAll")]
+    public async Task<IActionResult> GetCartoonAllCartoons()
+    {
+        try
+        {
+            var viewModelResponse = await _cartoonService.GetAllCartoonsAsync();
+
+            if (viewModelResponse == null)
+            {
+                var correlationId = Guid.NewGuid();
+                // log Not Found
+                return NotFound(($"Id: {correlationId}"));
+            }
+            return Ok(viewModelResponse);
+        }
+        catch (Exception ex)
+        {
+            // Log exception info
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 }

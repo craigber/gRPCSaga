@@ -3,6 +3,7 @@ using ProtoBuf.Grpc;
 using CartoonDomain.Shared.v1.Interfaces;
 using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Service.Data;
+using CartoonDomain.Service.Data.Entities;
 
 namespace CartoonDomain.Service.Services.v1;
 
@@ -33,40 +34,9 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
                 return null;
             }
 
-            var response = new CartoonSingleResponse
-            {
-                Id = cartoon.Id,
-                Title = cartoon.Title,
-                YearBegin = cartoon.YearBegin,
-                YearEnd = cartoon.YearEnd,
-                Description = cartoon.Description,
-                Rating = cartoon.Rating,
-                StudioId = cartoon.StudioId
-            };
+            var response = MapToSingleResponse(cartoon);
             return response;
-                
-                //var shows = new List<CartoonSingleResponse>();
-            //shows.Add(new CartoonSingleResponse
-            //{
-            //    Id = 1,
-            //    Title = "Rocky and Friends",
-            //    YearBegin = 1959,
-            //    YearEnd = 1963,
-            //    Description = "The adventures of Moose and Squirrel as they fight the bad guys from Potsylvania.",
-            //    Rating = 5.0m
-            //});
 
-            //shows.Add(new CartoonSingleResponse
-            //{
-            //    Id = 2,
-            //    Title = "The Simpsons",
-            //    YearBegin = 1989,
-            //    Description = "Just your typical American family.",
-            //    Rating = 5.0m
-            //});
-
-
-            //return shows[request.Id - 1];
         }
         catch (Exception ex)
         {
@@ -74,5 +44,47 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
             // Log issue and correlation Id
             throw new RpcException(new Status(StatusCode.Unknown, $"Id: {correlationId}"));
         }
+    }
+
+    public async Task<CartoonMultipleResponse> GetAllCartoonsAsync(CallContext context = default)
+    {
+        try
+        {
+            var cartoons = _context.Cartoons.ToList();
+
+            if (cartoons == null || cartoons.Count == 0)
+            {
+                return null;
+            }
+
+            var response = new CartoonMultipleResponse();
+            response.Cartoons = new List<CartoonSingleResponse>();
+            foreach (var c in cartoons)
+            {
+                response.Cartoons.Add(MapToSingleResponse(c));
+            }
+            return response;
+        }
+        catch (Exception ex)
+        {
+            var correlationId = Guid.NewGuid();
+            // Log issue and correlation Id
+            throw new RpcException(new Status(StatusCode.Unknown, $"Id: {correlationId}"));
+        }
+    }
+
+    private CartoonSingleResponse MapToSingleResponse(Cartoon cartoon)
+    {
+        var response = new CartoonSingleResponse
+        {
+            Id = cartoon.Id,
+            Title = cartoon.Title,
+            YearBegin = cartoon.YearBegin,
+            YearEnd = cartoon.YearEnd,
+            Description = cartoon.Description,
+            Rating = cartoon.Rating,
+            StudioId = cartoon.StudioId
+        };
+        return response;
     }
 }
