@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
-using CartoonDomain.Shared.v1.Contracts;
+using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Shared.v1.Interfaces;
 using Cartoonalogue.Api.ViewModels;
 using Cartoonalogue.Api.Services;

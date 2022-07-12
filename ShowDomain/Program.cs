@@ -20,7 +20,7 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGrpcService<CartoonDomainService>();
+    endpoints.MapGrpcService<CartoonDomainQueryService>();
 });
 
 // Configure the HTTP request pipeline.

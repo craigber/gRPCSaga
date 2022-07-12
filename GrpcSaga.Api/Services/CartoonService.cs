@@ -1,5 +1,5 @@
 ﻿using Cartoonalogue.Api.ViewModels;
-using CartoonDomain.Shared.v1.Contracts;
+using CartoonDomain.Shared.Queries.v1.Contracts;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
@@ -9,13 +9,15 @@ namespace Cartoonalogue.Api.Services;
 public class CartoonService: ICartoonService
 {
     private readonly ILogger<CartoonService> _logger;
-    private readonly ICartoonDomainService _showService;
+    private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
 
     public CartoonService(ILogger<CartoonService> logger)
     {
         _logger = logger;
+
+        // TODO: Instantiate the gRPC channel in Program.cs and then inject it here
         var channel = GrpcChannel.ForAddress("https://localhost:7227");
-        _showService = channel.CreateGrpcService<ICartoonDomainService>();
+        _cartoonDomainQueryService = channel.CreateGrpcService<ICartoonDomainQueryService>();
     }
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
@@ -27,7 +29,7 @@ public class CartoonService: ICartoonService
                 Id = id
             };
                        
-            var getShowResponse = await _showService.GetShow(request);
+            var getShowResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(request);
 
             if (getShowResponse == null)
             {
@@ -40,15 +42,19 @@ public class CartoonService: ICartoonService
             var viewModelResponse = new CartoonViewModel
             {
                 Id = getShowResponse.Id,
-                Name = getShowResponse.Name,
+                Title = getShowResponse.Title,
                 YearBegin = getShowResponse.YearBegin,
                 YearEnd = getShowResponse.YearEnd,
+                Description = getShowResponse.Description,
+                Rating = getShowResponse.Rating,
                 StudioId = getShowResponse.StudioId
             };
             return viewModelResponse;
         }
         catch (Exception ex)
         {
+            // TODO: catch the RpcException and handle it correctly
+
             var correlationId = Guid.NewGuid();
             // write exception and correlation Id to log
             throw new Exception($"Id: {correlationId}");
