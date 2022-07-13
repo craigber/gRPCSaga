@@ -53,7 +53,7 @@ public class CartoonController : ControllerBase
 
     [HttpGet]
     [Route("GetAll")]
-    public async Task<IActionResult> GetCartoonAllCartoons()
+    public async Task<IActionResult> GetAllCartoons()
     {
         try
         {
