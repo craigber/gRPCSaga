@@ -4,6 +4,7 @@ using CartoonDomain.Shared.v1.Interfaces;
 using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Service.Data;
 using CartoonDomain.Service.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CartoonDomain.Service.Services.v1;
 
@@ -50,7 +51,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
     {
         try
         {
-            var cartoons = _context.Cartoons.ToList();
+            var cartoons = _context.Cartoons.Include("Characters").ToList();
 
             if (cartoons == null || cartoons.Count == 0)
             {
@@ -83,8 +84,23 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
             YearEnd = cartoon.YearEnd,
             Description = cartoon.Description,
             Rating = cartoon.Rating,
-            StudioId = cartoon.StudioId
+            StudioId = cartoon.StudioId        
         };
+
+        if (cartoon.Characters.Any())
+        {
+            response.Characters = new List<CharacterSingleResponse>();
+            foreach (var character in cartoon.Characters)
+            {
+                response.Characters.Add(new CharacterSingleResponse
+                {
+                    Id = character.Id,
+                    Name = character.Name,
+                    Description = character.Description,
+                    CartoonId = character.CartoonId
+                });
+            }
+        }
         return response;
     }
 }

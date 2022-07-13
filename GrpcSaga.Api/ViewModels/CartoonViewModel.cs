@@ -9,4 +9,6 @@ public class CartoonViewModel
     public string? Description { get; set; }
     public decimal? Rating { get; set; }
     public int StudioId { get; set; }
+
+    public List<CharacterViewModel> Characters { get; set; }
 }

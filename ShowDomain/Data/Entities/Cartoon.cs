@@ -15,5 +15,6 @@ namespace CartoonDomain.Service.Data.Entities
         public string? Description { get; set; }
         public decimal? Rating { get; set; }
         public int StudioId { get; set; }
+        public virtual IEnumerable<Character> Characters { get; set; }
     }
 }

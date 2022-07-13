@@ -79,7 +79,7 @@ public class CartoonService: ICartoonService
             var cartoons = new List<CartoonViewModel>();
             foreach (var c in getShowResponse.Cartoons)
             {
-                cartoons.Add(new CartoonViewModel
+                var currentCartoon = new CartoonViewModel
                 {
                     Id = c.Id,
                     Title = c.Title,
@@ -88,7 +88,22 @@ public class CartoonService: ICartoonService
                     Description = c.Description,
                     Rating = c.Rating,
                     StudioId = c.StudioId
-                });
+                };
+                if (c.Characters.Any())
+                {
+                    currentCartoon.Characters = new List<CharacterViewModel>();
+                    foreach(var ch in c.Characters)
+                    {
+                        currentCartoon.Characters.Add(new CharacterViewModel
+                        {
+                            Id = ch.Id,
+                            Name = ch.Name,
+                            Description = ch.Description,
+                            CartoonId = ch.CartoonId
+                        });
+                    }
+                }
+                cartoons.Add(currentCartoon);
             }
             return cartoons;
         }

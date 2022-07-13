@@ -14,7 +14,7 @@ public class CartoonSingleResponse
 
     [ProtoMember(3)]
     public int YearBegin { get; set; }
-        
+
     [ProtoMember(4)]
     public int? YearEnd { get; set; }
 
@@ -23,7 +23,10 @@ public class CartoonSingleResponse
 
     [ProtoMember(6)]
     public decimal? Rating { get; set; }
-        
+
     [ProtoMember(7)]
     public int StudioId { get; set; }
+
+    [ProtoMember(8)]
+    public IList<CharacterSingleResponse> Characters { get; set; }
 }

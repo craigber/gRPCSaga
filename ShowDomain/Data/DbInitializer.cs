@@ -10,6 +10,144 @@ public static class DbInitializer
         context.Database.EnsureCreated();
 
         SeedCartoons(context);
+        SeedCharacters(context);
+    }
+
+    private static void SeedCharacters(CartoonQueryContext context)
+    {
+        if (context.Characters.Any())
+        {
+            return;
+        }
+
+        var characters = new Character[]
+        {
+            new Character
+            {
+                Name = "Rocky",
+                Description = "A plucky hero squirrel",
+                CartoonId = 1
+            },
+            new Character
+            {
+                Name = "Bullwinke J. Moose",
+                Description = "A somewhat-dimwitted moose but still one of our heros",
+                CartoonId = 1
+            },
+            new Character
+            {
+                Name = "Boris Badanov",
+                Description = "Sneaky bad guy, often in disguise",
+                CartoonId = 1
+            },
+            new Character
+            {
+                Name = "Natasha Fatale",
+                Description = "Tall, secretive sidekick to Boris",
+                CartoonId = 1
+            },
+            new Character
+            {
+                Name = "Homer Simpson",
+                Description = "All-American dad",
+                CartoonId = 2
+            },
+            new Character
+            {
+                Name = "Marge Simpson",
+                Description = "Wife and mother, who somehow makes it all work",
+                CartoonId = 2
+            },
+            new Character
+            {
+                Name = "Bart Simpson",
+                Description = "Best quote: I didn't think it possible, but this both sucks and blows at the same time",
+                CartoonId = 2
+            },
+            new Character
+            {
+                Name = "Lisa Simpson",
+                Description = "Smart and saxaphone playing daughter",
+                CartoonId = 2
+            },
+            new Character
+            {
+                Name = "Maggie Simpson",
+                Description = "Oh, look at the cute baby",
+                CartoonId = 2
+            },
+            new Character
+            {
+                Name = "Fred Flintstone",
+                Description = "The leader and chief trouble-maker",
+                CartoonId = 3
+            },
+            new Character
+            {
+                Name = "Wilma Flintstone",
+                Description = "How does she put up with Fred's shenanigans?",
+                CartoonId = 3
+            },
+            new Character
+            {
+                Name = "Barney Rubble",
+                Description = "Neighbor and assistant trouble-maker",
+                CartoonId = 3
+            },
+            new Character
+            {
+                Name = "Betty Rubble",
+                Description = "Neighbor and Wilma's best friend",
+                CartoonId = 3
+            },
+            new Character
+            {
+                Name = "George Jetson",
+                Description = "All American dad of the future",
+                CartoonId = 4
+            },
+            new Character
+            {
+                Name = "Jane Jetson",
+                Description = "Everyone's favorite cartoon mom",
+                CartoonId = 4
+            },
+            new Character
+            {
+                Name = "Judy Jetson",
+                Description = "Daughter on the teen-set",
+                CartoonId = 4
+            },
+            new Character
+            {
+                Name = "Elroy Jetson",
+                Description = "Thinks his dad is the greatest",
+                CartoonId = 4
+            },
+            new Character
+            {
+                Name = "Astro",
+                Description = "The Jetson family dog",
+                CartoonId = 4
+            },
+            new Character
+            {
+                Name = "Pink Panther",
+                Description = "Never talking star",
+                CartoonId = 5
+            },
+            new Character
+            {
+                Name = "Inspector Clouseau",
+                Description = "Bumbling detective",
+                CartoonId = 5
+            }
+        };
+        foreach (var character in characters)
+        {
+            context.Characters.Add(character);
+        }
+        context.SaveChanges();
     }
 
     private static void SeedCartoons(CartoonQueryContext context)

@@ -6,6 +6,7 @@ namespace CartoonDomain.Service.Data;
 public class CartoonQueryContext : DbContext
 {
     public DbSet<Cartoon> Cartoons { get; set; }
+    public DbSet<Character> Characters { get; set; }
 
     public CartoonQueryContext(DbContextOptions<CartoonQueryContext> options) : base(options)
     { }
