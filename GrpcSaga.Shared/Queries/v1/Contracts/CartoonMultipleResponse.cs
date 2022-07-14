@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using ProtoBuf;
 using System.Runtime.Serialization;
 
-namespace CartoonDomain.Shared.Queries.v1.Contracts
+namespace CartoonDomain.Shared.Queries.v1.Contracts;
+
+[ProtoContract]
+public class CartoonMultipleResponse
 {
-    [ProtoContract]
-    public class CartoonMultipleResponse
-    {
-        [ProtoMember(1)]
-        public IList<CartoonSingleResponse> Cartoons { get; set; }
-    }
+    [ProtoMember(1)]
+    public IList<CartoonSingleResponse> Cartoons { get; set; }
 }

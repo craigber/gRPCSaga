@@ -11,10 +11,12 @@ public class CartoonQueryContext : DbContext
     public CartoonQueryContext(DbContextOptions<CartoonQueryContext> options) : base(options)
     { }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlite("Filename=Cartoons.db");
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.UseSqlite("Filename=Cartoonalogue.db");
         modelBuilder.Entity<Cartoon>().ToTable("Cartoons");
-        
     }
 }

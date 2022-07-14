@@ -16,16 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddCodeFirstGrpc();
-builder.Services.AddDbContext<CartoonQueryContext>(options => options.UseSqlServer("Server=.;Database=Cartoon;Trusted_Connection=True;MultipleActiveResultSets=true"));
+builder.Services.AddDbContext<CartoonQueryContext>(options =>
+    options.UseSqlite("DataSource=Cartoons.db"));
 
 var app = builder.Build();
+
 
 //Create database if not exist
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<CartoonQueryContext>();
-    DbInitializer.Initialize(context);
+    var cartoonQueryContext = services.GetRequiredService<CartoonQueryContext>();
+    DbInitializer.Initialize(cartoonQueryContext);
 }
 
 app.UseRouting();

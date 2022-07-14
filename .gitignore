@@ -133,3 +133,6 @@ $RECYCLE.BIN/
 _NCrunch*
 /.vs
 /.cr/personal/FavoritesList
+/ShowDomain/Cartoons.db
+*.db-shm
+/ShowDomain/Cartoons.db-wal
