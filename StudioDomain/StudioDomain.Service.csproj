@@ -18,11 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <ProjectReference Include="..\StudioDomain.Shared\StudioDomain.Shared.csproj" />
   </ItemGroup>
 
 </Project>

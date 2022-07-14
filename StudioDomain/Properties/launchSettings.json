@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "StudioDomain": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5129;https://localhost:7129",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

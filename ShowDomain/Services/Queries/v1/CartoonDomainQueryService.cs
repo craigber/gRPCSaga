@@ -28,7 +28,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
 
         try
         {
-            var cartoon = await _context.Cartoons.FindAsync(request.Id);
+            var cartoon = await _context.Cartoons.Include("Characters").SingleOrDefaultAsync(c => c.Id == request.Id);
 
             if (cartoon == null)
             {
@@ -87,7 +87,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
             StudioId = cartoon.StudioId        
         };
 
-        if (cartoon.Characters.Any())
+        if (cartoon.Characters != null && cartoon.Characters.Any())
         {
             response.Characters = new List<CharacterSingleResponse>();
             foreach (var character in cartoon.Characters)

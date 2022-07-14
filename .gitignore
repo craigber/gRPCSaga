@@ -136,3 +136,5 @@ _NCrunch*
 /ShowDomain/Cartoons.db
 *.db-shm
 /ShowDomain/Cartoons.db-wal
+/StudioDomain/Studios.db
+/StudioDomain/Studios.db-wal

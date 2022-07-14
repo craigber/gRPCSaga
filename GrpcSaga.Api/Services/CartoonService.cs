@@ -3,7 +3,8 @@ using CartoonDomain.Shared.Queries.v1.Contracts;
 using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
-using CartoonDomain.Service.Data;
+using StudioDomain.Shared.Queries.v1.Interfaces;
+using StudioDomain.Shared.Queries.v1.Contracts;
 
 namespace Cartoonalogue.Api.Services;
 
@@ -11,28 +12,33 @@ public class CartoonService: ICartoonService
 {
     private readonly ILogger<CartoonService> _logger;
     private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
+    private readonly IStudioDomainQueryService _studioDomainQueryService;
 
     public CartoonService(ILogger<CartoonService> logger)
     {
         _logger = logger;
 
         // TODO: Instantiate the gRPC channel in Program.cs and then inject it here
-        var channel = GrpcChannel.ForAddress("https://localhost:7227");
-        _cartoonDomainQueryService = channel.CreateGrpcService<ICartoonDomainQueryService>();
+        var cartoonChannel = GrpcChannel.ForAddress("https://localhost:7227");
+        _cartoonDomainQueryService = cartoonChannel.CreateGrpcService<ICartoonDomainQueryService>();
+
+        var studioChannel = GrpcChannel.ForAddress("https://localhost:7129");
+        _studioDomainQueryService = studioChannel.CreateGrpcService<IStudioDomainQueryService>();
     }
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
     {
         try
         {
-            var request = new CartoonSingleRequest
+            var cartoonRequest = new CartoonSingleRequest
             {
                 Id = id
             };
 
-            var getShowResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(request);
-
-            if (getShowResponse == null)
+            Task[] tasks = new Task[1];
+            var cartoonResponse = _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest).Result;
+           
+            if (cartoonResponse == null)
             {
                 // The requested id is not found
                 var correlationId = Guid.NewGuid();
@@ -40,16 +46,8 @@ public class CartoonService: ICartoonService
                 return null;
             }
 
-            var viewModelResponse = new CartoonViewModel
-            {
-                Id = getShowResponse.Id,
-                Title = getShowResponse.Title,
-                YearBegin = getShowResponse.YearBegin,
-                YearEnd = getShowResponse.YearEnd,
-                Description = getShowResponse.Description,
-                Rating = getShowResponse.Rating,
-                StudioId = getShowResponse.StudioId
-            };
+            var viewModelResponse = await MapCartoonAsync(cartoonResponse);
+
             return viewModelResponse;
         }
         catch (Exception ex)
@@ -79,30 +77,7 @@ public class CartoonService: ICartoonService
             var cartoons = new List<CartoonViewModel>();
             foreach (var c in getShowResponse.Cartoons)
             {
-                var currentCartoon = new CartoonViewModel
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    YearBegin = c.YearBegin,
-                    YearEnd = c.YearEnd,
-                    Description = c.Description,
-                    Rating = c.Rating,
-                    StudioId = c.StudioId
-                };
-                if (c.Characters.Any())
-                {
-                    currentCartoon.Characters = new List<CharacterViewModel>();
-                    foreach(var ch in c.Characters)
-                    {
-                        currentCartoon.Characters.Add(new CharacterViewModel
-                        {
-                            Id = ch.Id,
-                            Name = ch.Name,
-                            Description = ch.Description,
-                            CartoonId = ch.CartoonId
-                        });
-                    }
-                }
+                var currentCartoon = await MapCartoonAsync(c);
                 cartoons.Add(currentCartoon);
             }
             return cartoons;
@@ -115,5 +90,35 @@ public class CartoonService: ICartoonService
             // write exception and correlation Id to log
             throw new Exception($"Id: {correlationId}");
         }
+    }
+
+    private async Task<CartoonViewModel> MapCartoonAsync(CartoonSingleResponse response)
+    {
+        var currentCartoon = new CartoonViewModel
+        {
+            Id = response.Id,
+            Title = response.Title,
+            YearBegin = response.YearBegin,
+            YearEnd = response.YearEnd,
+            Description = response.Description,
+            Rating = response.Rating,
+            StudioId = response.StudioId,
+            StudioName = (await _studioDomainQueryService.GetStudioByIdAsync(new StudioSingleRequest { Id = response.StudioId })).Name
+        };
+        if (response.Characters.Any())
+        {
+            currentCartoon.Characters = new List<CharacterViewModel>();
+            foreach (var ch in response.Characters)
+            {
+                currentCartoon.Characters.Add(new CharacterViewModel
+                {
+                    Id = ch.Id,
+                    Name = ch.Name,
+                    Description = ch.Description,
+                    CartoonId = ch.CartoonId
+                });
+            }
+        }
+        return currentCartoon;
     }
 }
