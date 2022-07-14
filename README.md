@@ -22,7 +22,7 @@ Useful links:
 - [protobuf-net.Grpc](https://protobuf-net.github.io/protobuf-net.Grpc/gettingstarted). This library makes code-first possible.
 
 ## Data access
-A local install of SQL Server is currently used for the example database. A future update will use SQLite. The CQRS pattern is used to separate queries and commands. Eventually, the Saga Pattern will be used to enforce transactions to multiple database/domains.
+SQLite is used to make this application portable. The CQRS pattern is used to separate queries and commands. Eventually, the Saga Pattern will be used to enforce transactions to multiple database/domains.
 
 ## Design tradeoffs
 - There are libraries that support gRPC in a web frontend, but they are not officially supported by gRPC.
