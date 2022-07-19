@@ -2,11 +2,11 @@
 using ProtoBuf.Grpc;
 using CartoonDomain.Shared.v1.Interfaces;
 using CartoonDomain.Shared.Queries.v1.Contracts;
-using CartoonDomain.Service.Data;
-using CartoonDomain.Service.Data.Entities;
+using CartoonDomain.Query.Service.Data;
+using CartoonDomain.Common.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CartoonDomain.Service.Services.v1;
+namespace CartoonDomain.Query.Service.Services.v1;
 
 public class CartoonDomainQueryService : ICartoonDomainQueryService
 {
@@ -17,7 +17,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         _context = context;
     }
 
-    public async Task<CartoonSingleResponse> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default)
+    public async Task<CartoonSaveRequest> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default)
     {
         if (request.Id <= 0)
         {
@@ -59,7 +59,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
             }
 
             var response = new CartoonMultipleResponse();
-            response.Cartoons = new List<CartoonSingleResponse>();
+            response.Cartoons = new List<CartoonSaveRequest>();
             foreach (var c in cartoons)
             {
                 response.Cartoons.Add(MapToSingleResponse(c));
@@ -74,9 +74,9 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
     }
 
-    private CartoonSingleResponse MapToSingleResponse(Cartoon cartoon)
+    private CartoonSaveRequest MapToSingleResponse(Cartoon cartoon)
     {
-        var response = new CartoonSingleResponse
+        var response = new CartoonSaveRequest
         {
             Id = cartoon.Id,
             Title = cartoon.Title,

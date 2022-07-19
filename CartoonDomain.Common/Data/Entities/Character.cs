@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CartoonDomain.Service.Data.Entities
+namespace CartoonDomain.Common.Data.Entities
 {
     public class Character
     {

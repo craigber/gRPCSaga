@@ -1,10 +1,10 @@
 ﻿using ProtoBuf;
 using System.Runtime.Serialization;
 
-namespace CartoonDomain.Shared.Queries.v1.Contracts;
+namespace CartoonDomain.Shared.Commands.v1.Contracts;
 
 [ProtoContract]
-public class CartoonSaveRequest
+public class CartoonUpdateRequest
 {
     [ProtoMember(1)]
     public int Id { get; set; }
@@ -26,7 +26,4 @@ public class CartoonSaveRequest
 
     [ProtoMember(7)]
     public int StudioId { get; set; }
-
-    [ProtoMember(8)]
-    public IList<CharacterSingleResponse> Characters { get; set; }
 }

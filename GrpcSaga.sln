@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Service", "ShowDomain\CartoonDomain.Service.csproj", "{0F85758A-77A0-41C8-867E-304B69DB8C2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Query.Service", "ShowDomain\CartoonDomain.Query.Service.csproj", "{0F85758A-77A0-41C8-867E-304B69DB8C2B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cartoonalogue.Api", "GrpcSaga.Api\Cartoonalogue.Api.csproj", "{9C711814-F689-4327-9C47-CA41B049653E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Shared", "GrpcSaga.Shared\CartoonDomain.Shared.csproj", "{6DEACC1E-26D8-4E6D-8153-83508B9CCD1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioDomain.Service", "StudioDomain\StudioDomain.Service.csproj", "{6B199F9E-91DC-41B1-8D5A-6B9283F86227}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioDomain.Service", "StudioDomain\StudioDomain.Service.csproj", "{6B199F9E-91DC-41B1-8D5A-6B9283F86227}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioDomain.Shared", "StudioDomain.Shared\StudioDomain.Shared.csproj", "{1B7A6094-76FF-452A-9EA3-043036F794A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioDomain.Shared", "StudioDomain.Shared\StudioDomain.Shared.csproj", "{1B7A6094-76FF-452A-9EA3-043036F794A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartoonDomain.Command.Service", "CartoonDomain.Command.Service\CartoonDomain.Command.Service.csproj", "{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartoonDomain.Common", "CartoonDomain.Common\CartoonDomain.Common.csproj", "{6C876122-B312-4788-ADC1-41EEF3E0D3EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{1B7A6094-76FF-452A-9EA3-043036F794A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B7A6094-76FF-452A-9EA3-043036F794A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B7A6094-76FF-452A-9EA3-043036F794A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C876122-B312-4788-ADC1-41EEF3E0D3EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C876122-B312-4788-ADC1-41EEF3E0D3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C876122-B312-4788-ADC1-41EEF3E0D3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C876122-B312-4788-ADC1-41EEF3E0D3EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

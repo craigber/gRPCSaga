@@ -1,14 +1,14 @@
 ﻿using CartoonDomain.Common.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CartoonDomain.Query.Service.Data;
+namespace CartoonDomain.Service.Data;
 
-public class CartoonQueryContext : DbContext
+public class CartoonCommandContext : DbContext
 {
     public DbSet<Cartoon> Cartoons { get; set; }
     public DbSet<Character> Characters { get; set; }
 
-    public CartoonQueryContext(DbContextOptions<CartoonQueryContext> options) : base(options)
+    public CartoonCommandContext(DbContextOptions<CartoonCommandContext> options) : base(options)
     { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

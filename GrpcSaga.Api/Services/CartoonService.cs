@@ -1,10 +1,12 @@
 ﻿using Cartoonalogue.Api.ViewModels;
 using CartoonDomain.Shared.Queries.v1.Contracts;
-using Grpc.Net.Client;
+using CartoonDomain.Shared.Commands.v1.Contracts;
 using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
+using CartoonDomain.Shared.Commands.v1.Interfaces;
+using Grpc.Net.Client;
 
 namespace Cartoonalogue.Api.Services;
 
@@ -13,17 +15,43 @@ public class CartoonService: ICartoonService
     private readonly ILogger<CartoonService> _logger;
     private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
     private readonly IStudioDomainQueryService _studioDomainQueryService;
+    private readonly ICartoonDomainCommandService _cartoonDomainCommandService;
 
     public CartoonService(ILogger<CartoonService> logger)
     {
         _logger = logger;
 
         // TODO: Instantiate the gRPC channel in Program.cs and then inject it here
-        var cartoonChannel = GrpcChannel.ForAddress("https://localhost:7227");
-        _cartoonDomainQueryService = cartoonChannel.CreateGrpcService<ICartoonDomainQueryService>();
+        var CartoonQueryChannel = GrpcChannel.ForAddress("https://localhost:7227");
+        _cartoonDomainQueryService = CartoonQueryChannel.CreateGrpcService<ICartoonDomainQueryService>();
 
-        var studioChannel = GrpcChannel.ForAddress("https://localhost:7129");
-        _studioDomainQueryService = studioChannel.CreateGrpcService<IStudioDomainQueryService>();
+        var CartoonCommandChannel = GrpcChannel.ForAddress("https://localhost:7006");
+        _cartoonDomainCommandService = CartoonCommandChannel.CreateGrpcService<ICartoonDomainCommandService>();
+
+        var studioQueryChannel = GrpcChannel.ForAddress("https://localhost:7129");
+        _studioDomainQueryService = studioQueryChannel.CreateGrpcService<IStudioDomainQueryService>();
+    }
+
+    public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonViewModel viewModel)
+    {
+        if (viewModel == null || viewModel.Id <= 0)
+        {
+            throw new ArgumentNullException(nameof(viewModel));
+        }
+
+        var request = new CartoonUpdateRequest
+        {
+            Id = viewModel.Id,
+            Title = viewModel.Title,
+            YearBegin = viewModel.YearBegin,
+            YearEnd = viewModel.YearEnd,
+            Description = viewModel.Description,
+            Rating = viewModel.Rating,
+            StudioId = viewModel.StudioId
+        };
+        //var response = _cartoonDomainQueryService.Update
+        return null;
+
     }
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
@@ -92,7 +120,7 @@ public class CartoonService: ICartoonService
         }
     }
 
-    private async Task<CartoonViewModel> MapCartoonAsync(CartoonSingleResponse response)
+    private async Task<CartoonViewModel> MapCartoonAsync(CartoonSaveRequest response)
     {
         var currentCartoon = new CartoonViewModel
         {

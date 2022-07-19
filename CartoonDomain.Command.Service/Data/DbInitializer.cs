@@ -1,18 +1,19 @@
 ﻿using CartoonDomain.Common.Data.Entities;
+using CartoonDomain.Service.Data;
 
-namespace CartoonDomain.Query.Service.Data;
+namespace CartoonDomain.Command.Service.Data;
 
 public static class DbInitializer
 {
 
-    public static void Initialize(CartoonQueryContext context)
+    public static void Initialize(CartoonCommandContext context)
     {
         context.Database.EnsureCreated();
         SeedCartoons(context);
         SeedCharacters(context);
     }
 
-    private static void SeedCharacters(CartoonQueryContext context)
+    private static void SeedCharacters(CartoonCommandContext context)
     {
         if (context.Characters.Any())
         {
@@ -149,7 +150,7 @@ public static class DbInitializer
         context.SaveChanges();
     }
 
-    private static void SeedCartoons(CartoonQueryContext context)
+    private static void SeedCartoons(CartoonCommandContext context)
     {
         if (context.Cartoons.Any())
         {

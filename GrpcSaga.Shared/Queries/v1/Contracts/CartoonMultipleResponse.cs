@@ -12,5 +12,5 @@ namespace CartoonDomain.Shared.Queries.v1.Contracts;
 public class CartoonMultipleResponse
 {
     [ProtoMember(1)]
-    public IList<CartoonSingleResponse> Cartoons { get; set; }
+    public IList<CartoonSaveRequest> Cartoons { get; set; }
 }

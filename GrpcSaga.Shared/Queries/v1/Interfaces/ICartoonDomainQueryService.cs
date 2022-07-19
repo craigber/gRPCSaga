@@ -9,7 +9,7 @@ namespace CartoonDomain.Shared.v1.Interfaces;
 public interface ICartoonDomainQueryService
 {
     [OperationContract]
-    Task<CartoonSingleResponse> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default);
+    Task<CartoonSaveRequest> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default);
 
     [OperationContract]
     Task<CartoonMultipleResponse> GetAllCartoonsAsync(CallContext context = default);

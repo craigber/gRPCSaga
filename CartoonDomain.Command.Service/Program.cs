@@ -4,8 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
-using CartoonDomain.Query.Service.Services.v1;
-using CartoonDomain.Query.Service.Data;
+using CartoonDomain.Service.Services.Commands.v1;
+using CartoonDomain.Command.Service.Data;
+using CartoonDomain.Service.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
 
 // Add services to the container.
+
 builder.Services.AddGrpc();
 builder.Services.AddCodeFirstGrpc();
-builder.Services.AddDbContext<CartoonQueryContext>(options =>
+builder.Services.AddDbContext<CartoonCommandContext>(options =>
     options.UseSqlite("DataSource=Cartoons.db"));
 
 var app = builder.Build();
@@ -26,7 +28,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var cartoonQueryContext = services.GetRequiredService<CartoonQueryContext>();
+    var cartoonQueryContext = services.GetRequiredService<CartoonCommandContext>();
     DbInitializer.Initialize(cartoonQueryContext);
 }
 
@@ -34,7 +36,7 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapGrpcService<CartoonDomainQueryService>();
+    endpoints.MapGrpcService<CartoonDomainCommandService>();
 });
 
 // Configure the HTTP request pipeline.
