@@ -1,9 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Grpc.Net.Client;
-using ProtoBuf.Grpc.Client;
-using ProtoBuf.Grpc.Client;
-using CartoonDomain.Shared.Queries.v1.Contracts;
-using CartoonDomain.Shared.v1.Interfaces;
 using Cartoonalogue.Api.ViewModels;
 using Cartoonalogue.Api.Services;
 
@@ -23,10 +18,51 @@ public class CartoonController : ControllerBase
         _cartoonService = cartoonService;
     }
 
+
+    /// <summary>
+    /// Updates a specifc Cartoon
+    /// </summary>
+    /// <param name="viewModel"></param>
+    /// <returns>The newly updated Cartoon</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     PUT /UpdateCartoon
+    ///     {
+    ///         "id": 1,
+    ///         "title": "This is my favorite cartoon",
+    ///         "yearBegin": 1990,
+    ///         "yearEnd": 1998,
+    ///         "description": "Lot's of laughs!",
+    ///         "rating": 4,
+    ///         "studioId": 1
+    ///     }
+    /// </remarks>
+    /// <response code="200">Returns the newly updated item</response>
+    /// <response code="400">If the viewModel is null</response>
+    /// <response code="404">If the specific Cartoon is not found</response>
     [HttpPut]
+    [Route("Update")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartoonViewModel))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateCartoon(CartoonUpdateViewModel viewModel)
     {
+        if (viewModel == null || !ModelState.IsValid)
+        {
+            var correlationId = Guid.NewGuid();
+            // Log issue
+            return BadRequest($"Id: {correlationId}");
+        }
         var viewModelResponse = await _cartoonService.UpdateCartoonAsync(viewModel);
+
+        if (viewModelResponse == null)
+        {
+            var correlationId = Guid.NewGuid();
+            return NotFound($"Id: {correlationId}");
+        }
 
         return Ok(viewModelResponse);
     }
