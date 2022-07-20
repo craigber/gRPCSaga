@@ -1,6 +1,5 @@
 ﻿using CartoonDomain.Shared.Commands.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Interfaces;
-using Grpc.Core;
 using ProtoBuf.Grpc;
 using Microsoft.EntityFrameworkCore;
 using CartoonDomain.Service.Data;
@@ -16,7 +15,7 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
         _context = context;
     }
 
-    public async Task<CartoonUpdateResponse> UpdateCartoonAsync(CartoonUpdateRequest request)
+    public async Task<CartoonUpdateResponse> UpdateCartoonAsync(CartoonUpdateRequest request, CallContext context = default)
     {
         if (request == null)
         {
@@ -41,6 +40,8 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
 
             if (cartoon.IsValid())
             {
+                _context.Cartoons.Attach(cartoon);
+                _context.Entry(cartoon).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return new CartoonUpdateResponse
                 {

@@ -6,4 +6,5 @@ public interface ICartoonService
 {
     public Task<CartoonViewModel> GetCartoonByIdAsync(int id);
     public Task<IList<CartoonViewModel>> GetAllCartoonsAsync();
+    public Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel viewModel);
 }

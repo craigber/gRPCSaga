@@ -21,7 +21,7 @@ public class CartoonService: ICartoonService
     {
         _logger = logger;
 
-        // TODO: Instantiate the gRPC channel in Program.cs and then inject it here
+        // TODO: Instantiate the gRPC channels in Program.cs and then inject them here
         var CartoonQueryChannel = GrpcChannel.ForAddress("https://localhost:7227");
         _cartoonDomainQueryService = CartoonQueryChannel.CreateGrpcService<ICartoonDomainQueryService>();
 
@@ -32,25 +32,45 @@ public class CartoonService: ICartoonService
         _studioDomainQueryService = studioQueryChannel.CreateGrpcService<IStudioDomainQueryService>();
     }
 
-    public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonViewModel viewModel)
+    public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
     {
-        if (viewModel == null || viewModel.Id <= 0)
+        if (updateViewModel == null || updateViewModel.Id <= 0)
         {
-            throw new ArgumentNullException(nameof(viewModel));
+            throw new ArgumentNullException(nameof(updateViewModel));
         }
 
-        var request = new CartoonUpdateRequest
+        try
         {
-            Id = viewModel.Id,
-            Title = viewModel.Title,
-            YearBegin = viewModel.YearBegin,
-            YearEnd = viewModel.YearEnd,
-            Description = viewModel.Description,
-            Rating = viewModel.Rating,
-            StudioId = viewModel.StudioId
-        };
-        //var response = _cartoonDomainQueryService.Update
-        return null;
+
+            var updateRequest = new CartoonUpdateRequest
+            {
+                Id = updateViewModel.Id,
+                Title = updateViewModel.Title,
+                YearBegin = updateViewModel.YearBegin,
+                YearEnd = updateViewModel.YearEnd,
+                Description = updateViewModel.Description,
+                Rating = updateViewModel.Rating,
+                StudioId = updateViewModel.StudioId
+            };
+            var updateResponse = await _cartoonDomainCommandService.UpdateCartoonAsync(updateRequest);
+
+            var cartoonRequest = new CartoonSingleRequest
+            {
+                Id = updateViewModel.Id
+            };
+
+            var viewModelResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
+            var cartoonViewModel = await MapCartoonAsync(viewModelResponse);
+
+            return cartoonViewModel;
+        }
+        catch (Exception ex)
+        {
+            var correlationId = Guid.NewGuid();
+            // Log exception
+            ex.Data.Add("Correlation Id", $"Id: {correlationId}");
+            throw ex;
+        }
 
     }
 
@@ -63,8 +83,8 @@ public class CartoonService: ICartoonService
                 Id = id
             };
 
-            Task[] tasks = new Task[1];
-            var cartoonResponse = _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest).Result;
+            //Task[] tasks = new Task[1];
+            var cartoonResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
            
             if (cartoonResponse == null)
             {

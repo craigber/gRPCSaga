@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-//using Grpc.Net.Client;
-//using ProtoBuf.Grpc.Client;
+using Grpc.Net.Client;
+using ProtoBuf.Grpc.Client;
 using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Shared.v1.Interfaces;
@@ -21,6 +21,14 @@ public class CartoonController : ControllerBase
     {
         _logger = logger;
         _cartoonService = cartoonService;
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> UpdateCartoon(CartoonUpdateViewModel viewModel)
+    {
+        var viewModelResponse = await _cartoonService.UpdateCartoonAsync(viewModel);
+
+        return Ok(viewModelResponse);
     }
 
     [HttpGet("{id}")]

@@ -18,16 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CartoonDomain.Command.Service\CartoonDomain.Command.Service.csproj" />
     <ProjectReference Include="..\CartoonDomain.Common\CartoonDomain.Common.csproj" />
     <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Commands\" />
   </ItemGroup>
 
 </Project>

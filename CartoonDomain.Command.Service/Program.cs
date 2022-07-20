@@ -28,8 +28,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var cartoonQueryContext = services.GetRequiredService<CartoonCommandContext>();
-    DbInitializer.Initialize(cartoonQueryContext);
+    var cartoonCommandContext = services.GetRequiredService<CartoonCommandContext>();
+    DbInitializer.Initialize(cartoonCommandContext);
 }
 
 app.UseRouting();

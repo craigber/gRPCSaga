@@ -22,12 +22,10 @@ builder.Services.AddDbContext<CartoonQueryContext>(options =>
 var app = builder.Build();
 
 
-//Create database if not exist
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var cartoonQueryContext = services.GetRequiredService<CartoonQueryContext>();
-    DbInitializer.Initialize(cartoonQueryContext);
 }
 
 app.UseRouting();

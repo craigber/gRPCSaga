@@ -13,10 +13,11 @@ public class CartoonCommandContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Filename=Cartoons.db");
+        optionsBuilder.UseSqlite(@"Filename=..\Data\Cartoons.db");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cartoon>().ToTable("Cartoons");
+        modelBuilder.Entity<Character>().ToTable("Characters");
     }
 }
