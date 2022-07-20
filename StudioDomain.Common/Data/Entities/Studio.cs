@@ -1,4 +1,4 @@
-﻿namespace StudioDomain.Service.Data.Entities;
+﻿namespace StudioDomain.Common.Data.Entities;
 
 public class Studio
 {

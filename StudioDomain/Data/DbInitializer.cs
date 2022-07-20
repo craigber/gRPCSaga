@@ -1,4 +1,4 @@
-﻿using StudioDomain.Service.Data.Entities;
+﻿using StudioDomain.Common.Data.Entities;
 
 namespace StudioDomain.Service.Data;
 

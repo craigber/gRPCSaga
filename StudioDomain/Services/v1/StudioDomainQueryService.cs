@@ -3,7 +3,7 @@ using ProtoBuf.Grpc;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
 using StudioDomain.Service.Data;
-using StudioDomain.Service.Data.Entities;
+using StudioDomain.Common.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace StudioDomain.Service.Services.v1;
