@@ -1,17 +1,17 @@
 ﻿using StudioDomain.Common.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace StudioDomain.Service.Data;
+namespace StudioDomain.Command.Service.Data;
 
-public class StudioQueryContext : DbContext
+public class StudioCommandContext : DbContext
 {
     public DbSet<Studio> Studios { get; set; }
-    public StudioQueryContext(DbContextOptions<StudioQueryContext> options) : base(options)
+    public StudioCommandContext(DbContextOptions<StudioCommandContext> options) : base(options)
     { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Filename=Studios.db");
+        optionsBuilder.UseSqlite(@"Filename=..\Data\Studios.db");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

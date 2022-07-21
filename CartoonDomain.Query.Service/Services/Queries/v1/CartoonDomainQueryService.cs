@@ -21,9 +21,9 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
     {
         if (request.Id <= 0)
         {
-            var correlationId = Guid.NewGuid();
-            // Log issue and correlation Id
-            throw new RpcException(new Status(StatusCode.NotFound, $"Id: {correlationId}"));
+            var ex = new ArgumentNullException(nameof(request));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
         }
 
         try
@@ -41,9 +41,12 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
         catch (Exception ex)
         {
-            var correlationId = Guid.NewGuid();
-            // Log issue and correlation Id
-            throw new RpcException(new Status(StatusCode.Unknown, $"Id: {correlationId}"));
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
     }
 
@@ -68,9 +71,12 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
         catch (Exception ex)
         {
-            var correlationId = Guid.NewGuid();
-            // Log issue and correlation Id
-            throw new RpcException(new Status(StatusCode.Unknown, $"Id: {correlationId}"));
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
     }
 

@@ -1,18 +1,18 @@
 ﻿using StudioDomain.Common.Data.Entities;
 
-namespace StudioDomain.Service.Data;
+namespace StudioDomain.Command.Service.Data;
 
 public static class DbInitializer
 {
 
-    public static void Initialize(StudioQueryContext context)
+    public static void Initialize(StudioCommandContext context)
     {
         context.Database.EnsureCreated();
 
         SeedStudios(context);
     }
 
-    private static void SeedStudios(StudioQueryContext context)
+    private static void SeedStudios(StudioCommandContext context)
     {
         if (context.Studios.Any())
         {

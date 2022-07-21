@@ -5,19 +5,22 @@ using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
+using StudioDomain.Shared.Commands.v1.Interfaces;
+using StudioDomain.Shared.Commands.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Interfaces;
 using Grpc.Net.Client;
 
 namespace Cartoonalogue.Api.Services;
 
-public class CartoonService: ICartoonService
+public class CartoonApiService: ICartoonApiService
 {
-    private readonly ILogger<CartoonService> _logger;
+    private readonly ILogger<CartoonApiService> _logger;
     private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
     private readonly IStudioDomainQueryService _studioDomainQueryService;
     private readonly ICartoonDomainCommandService _cartoonDomainCommandService;
+    private readonly IStudioDomainCommandService _studioDomainCommandService;
 
-    public CartoonService(ILogger<CartoonService> logger)
+    public CartoonApiService(ILogger<CartoonApiService> logger)
     {
         _logger = logger;
 
@@ -30,9 +33,48 @@ public class CartoonService: ICartoonService
 
         var studioQueryChannel = GrpcChannel.ForAddress("https://localhost:7129");
         _studioDomainQueryService = studioQueryChannel.CreateGrpcService<IStudioDomainQueryService>();
+
+        var studioCommandChannel = GrpcChannel.ForAddress("https://localhost:7166");
+        _studioDomainCommandService = studioCommandChannel.CreateGrpcService<IStudioDomainCommandService>();
     }
 
-    public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
+    public async Task<StudioViewModel?> CreateStudioAsync(StudioCreateViewModel createViewModel)
+    {
+        if (createViewModel == null || string.IsNullOrEmpty(createViewModel.Name))
+        {
+            throw new ArgumentNullException(nameof(createViewModel));
+        }
+
+        try
+        {
+            var createRequest = new StudioCreateRequest
+            {
+                Name = createViewModel.Name
+            };
+            var createResponse = await _studioDomainCommandService.CreateStudioAsync(createRequest);
+            if (createResponse == null)
+            {
+                return null;
+            }
+            var studioViewModel = new StudioViewModel
+            {
+                Id = createResponse.Id,
+                Name = createResponse.Name
+            };
+            return studioViewModel;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
+        }
+    }
+
+     public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
     {
         if (updateViewModel == null || updateViewModel.Id <= 0)
         {
@@ -66,12 +108,13 @@ public class CartoonService: ICartoonService
         }
         catch (Exception ex)
         {
-            var correlationId = Guid.NewGuid();
-            // Log exception
-            ex.Data.Add("Correlation Id", $"Id: {correlationId}");
-            throw ex;
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
-
     }
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
@@ -100,11 +143,12 @@ public class CartoonService: ICartoonService
         }
         catch (Exception ex)
         {
-            // TODO: catch the RpcException and handle it correctly
-
-            var correlationId = Guid.NewGuid();
-            // write exception and correlation Id to log
-            throw new Exception($"Id: {correlationId}");
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
     }
 
@@ -132,11 +176,12 @@ public class CartoonService: ICartoonService
         }
         catch (Exception ex)
         {
-            // TODO: catch the RpcException and handle it correctly
-
-            var correlationId = Guid.NewGuid();
-            // write exception and correlation Id to log
-            throw new Exception($"Id: {correlationId}");
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
     }
 

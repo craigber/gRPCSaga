@@ -138,3 +138,5 @@ _NCrunch*
 /ShowDomain/Cartoons.db-wal
 /StudioDomain/Studios.db
 /StudioDomain/Studios.db-wal
+*.db
+*.db-wal

@@ -13,5 +13,5 @@ namespace CartoonDomain.Shared.Commands.v1.Interfaces;
 public interface ICartoonDomainCommandService
 {
     [OperationContract]
-    Task<CartoonUpdateResponse> UpdateCartoonAsync(CartoonUpdateRequest request, CallContext context = default);
+    Task<CartoonUpdateResponse?> UpdateCartoonAsync(CartoonUpdateRequest request, CallContext context = default);
 }

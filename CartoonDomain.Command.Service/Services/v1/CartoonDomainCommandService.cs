@@ -15,11 +15,13 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
         _context = context;
     }
 
-    public async Task<CartoonUpdateResponse> UpdateCartoonAsync(CartoonUpdateRequest request, CallContext context = default)
+    public async Task<CartoonUpdateResponse?> UpdateCartoonAsync(CartoonUpdateRequest request, CallContext context = default)
     {
         if (request == null)
         {
-            throw new ArgumentNullException(nameof(request));
+            var ex = new ArgumentNullException(nameof(request));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
         }
 
         try
@@ -42,36 +44,23 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
             {
                 _context.Cartoons.Attach(cartoon);
                 _context.Entry(cartoon).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                var updateCount = await _context.SaveChangesAsync();
                 return new CartoonUpdateResponse
                 {
-                    IsSuccess = true
+                    IsSuccess = updateCount > 0                
                 };
+                
             }
             return null;
         }
-        // You could fold all the catch blocks into a single one, but
-        // I wanted to show the specifc Exceptions thrown here
-        catch (DbUpdateConcurrencyException ex)
-        {
-            var correlationId = Guid.NewGuid();
-            ex.Data.Add("Correlation Id", $"Id: {correlationId}. ");
-            // log exception here
-            throw ex;
-        }
-        catch (DbUpdateException ex)
-        {
-            var correlationId = Guid.NewGuid();
-            ex.Data.Add("Correlation Id", $"Id: {correlationId}. ");
-            // log exception here
-            throw ex;
-        }
         catch (Exception ex)
         {
-            var correlationId = Guid.NewGuid();
-            ex.Data.Add("Correlation Id", $"Id: {correlationId}. ");
-            // log exception here
-            throw ex;
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
         }
     }
 }

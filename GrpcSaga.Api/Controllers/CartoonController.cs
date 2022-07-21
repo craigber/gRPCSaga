@@ -10,9 +10,9 @@ public class CartoonController : ControllerBase
 {
     
     private readonly ILogger<CartoonController> _logger;
-    private readonly ICartoonService _cartoonService;
+    private readonly ICartoonApiService _cartoonService;
 
-    public CartoonController(ILogger<CartoonController> logger, ICartoonService cartoonService)
+    public CartoonController(ILogger<CartoonController> logger, ICartoonApiService cartoonService)
     {
         _logger = logger;
         _cartoonService = cartoonService;
@@ -106,9 +106,7 @@ public class CartoonController : ControllerBase
 
             if (viewModelResponse == null)
             {
-                var correlationId = Guid.NewGuid();
-                // log Not Found
-                return NotFound(($"Id: {correlationId}"));
+                return NotFound();
             }
             return Ok(viewModelResponse);
         }
@@ -117,5 +115,18 @@ public class CartoonController : ControllerBase
             // Log exception info
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
+
+    [HttpPost]
+    [Route("CreateStudio")]
+    public async Task<IActionResult> CreateStudioAsync(StudioCreateViewModel viewModel)
+    {
+        var viewModelResponse = await _cartoonService.CreateStudioAsync(viewModel);
+        if (viewModelResponse == null)
+        {
+            return NoContent();
+        }
+
+        return StatusCode(StatusCodes.Status201Created, viewModelResponse);
     }
 }
