@@ -129,4 +129,16 @@ public class CartoonController : ControllerBase
 
         return StatusCode(StatusCodes.Status201Created, viewModelResponse);
     }
+
+    [HttpPost]
+    [Route("CreateCharacter")]
+    public async Task<IActionResult> CreateCharacterAsync(CharacterCreateViewModel viewModel)
+    {
+        var viewModelResponse = await _cartoonService.CreateCharacterAsync(viewModel);
+        if (viewModelResponse == null)
+        {
+            return NoContent();
+        }
+        return StatusCode(StatusCodes.Status201Created, viewModelResponse);
+    }    
 }

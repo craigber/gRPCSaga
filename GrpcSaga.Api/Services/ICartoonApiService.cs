@@ -8,4 +8,5 @@ public interface ICartoonApiService
     public Task<IList<CartoonViewModel>> GetAllCartoonsAsync();
     public Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel viewModel);
     public Task<StudioViewModel?> CreateStudioAsync(StudioCreateViewModel viewModel);
+    public Task<CharacterViewModel?> CreateCharacterAsync(CharacterCreateViewModel viewModel);
 }

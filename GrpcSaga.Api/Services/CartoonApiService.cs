@@ -38,6 +38,45 @@ public class CartoonApiService: ICartoonApiService
         _studioDomainCommandService = studioCommandChannel.CreateGrpcService<IStudioDomainCommandService>();
     }
 
+    public async Task<CharacterViewModel?> CreateCharacterAsync(CharacterCreateViewModel requestViewModel)
+    {
+        if (requestViewModel == null || string.IsNullOrEmpty(requestViewModel.Name) || requestViewModel.CartoonId < 1)
+        {
+            var ex = new ArgumentNullException(nameof(requestViewModel));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
+        }
+
+        try
+        {
+            var createRequest = new CharacterCreateRequest
+            {
+                Name = requestViewModel.Name,
+                CartoonId = requestViewModel.CartoonId
+            };
+            var createResponse = await _cartoonDomainCommandService.CreateCharacterAsync(createRequest);
+            if (createResponse == null)
+            {
+                return null;
+            }
+            var responseViewModel = new CharacterViewModel
+            {
+                Id = createResponse.Id,
+                Name = createResponse.Name,
+                CartoonId = createResponse.CartoonId
+            };
+            return responseViewModel;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            throw;
+        }
+    }
+
     public async Task<StudioViewModel?> CreateStudioAsync(StudioCreateViewModel createViewModel)
     {
         if (createViewModel == null || string.IsNullOrEmpty(createViewModel.Name))
