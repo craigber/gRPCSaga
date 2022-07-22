@@ -8,6 +8,15 @@ I was tasked at my job to create a demo/example/reference application that showe
 
 This sample application is a catalog of cartoons -- a Cartoonalogue.
 
+## Building and Running the application
+1. Once you have the source on disk, run Visual Studio and open the GprcSaga solution
+2. Right-click on Solution 'GrpcSaga' (this is the top most item) in the Solution Explorer. 
+3. Select Properties (this is the bottom-most item) in the pop-menu.
+4. Select Multiple startup projects
+5. Set the following projects to Start: Cartoonalogue.Api, CartoonDomain.Command.Service, CartoonDomain.Query.Service, StudioDomain.Command.Service, StudioDomain.Query.Service
+6. Click OK
+7. Build and run the solution
+
 The sample is split into several projects:
 - Cartoonalogue
   - Cartoonalogue.Api: An ASP.Net Core Api project that provides a UI via a Swagger page. It makes REST calls from the browser to controllers. When you launch the solution inside Visual Studio, a Swagger page is presented where you can Try Out the API.

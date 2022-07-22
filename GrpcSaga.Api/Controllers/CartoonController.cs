@@ -20,25 +20,57 @@ public class CartoonalogueController : ControllerBase
     }
 
     [HttpGet()]
-    [Route("Cartoon/Info/{id}")]
+    [Route("Cartoon/{id}")]
     public async Task<IActionResult> GetCartoonById(int id)
     {
         if (id <= 0)
         {
-            var correlationId = Guid.NewGuid();
-            // log issue and correlation Id
-            return BadRequest($"Id: {correlationId}");
+            return BadRequest();
         }
 
         try
         {
-            var viewModelResponse = await _cartoonService.GetCartoonByIdAsync(id); 
+            var viewModelResponse = await _cartoonService.GetCartoonByIdAsync(id);
 
             if (viewModelResponse == null)
             {
-                var correlationId = Guid.NewGuid();
-                // log Not Found
-                return NotFound(($"Id: {correlationId}"));
+                return NotFound();
+            }
+            var viewModel = new CartoonViewModel
+            {
+                Id = viewModelResponse.Id,
+                Title = viewModelResponse.Title,
+                Description = viewModelResponse.Description,
+                YearBegin = viewModelResponse.YearBegin,
+                YearEnd = viewModelResponse.YearEnd,
+                Rating = viewModelResponse.Rating,
+                StudioId = viewModelResponse.StudioId
+            };
+            return Ok(viewModel);
+        }
+        catch (Exception ex)
+        {
+            // Log exception info
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    [HttpGet()]
+    [Route("Cartoon/Info/{id}")]
+    public async Task<IActionResult> GetCartoonInfoById(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var viewModelResponse = await _cartoonService.GetCartoonInfoByIdAsync(id); 
+
+            if (viewModelResponse == null)
+            {
+                return NotFound();
             }
             return Ok(viewModelResponse);
         }
@@ -50,12 +82,12 @@ public class CartoonalogueController : ControllerBase
     }
 
     [HttpGet]
-    [Route("Cartoon/GetAll")]
-    public async Task<IActionResult> GetAllCartoons()
+    [Route("Cartoon/Info/List")]
+    public async Task<IActionResult> GetAllCartoonInfosAsync()
     {
         try
         {
-            var viewModelResponse = await _cartoonService.GetAllCartoonsAsync();
+            var viewModelResponse = await _cartoonService.GetAllCartoonInfosAsync();
 
             if (viewModelResponse == null)
             {
@@ -96,7 +128,7 @@ public class CartoonalogueController : ControllerBase
     [Route("Cartoon/Update")]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartoonViewModel))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartoonInfoViewModel))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public async Task<IActionResult> UpdateCartoon(CartoonUpdateViewModel viewModel)

@@ -113,7 +113,7 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-     public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
+     public async Task<CartoonInfoViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
     {
         if (updateViewModel == null || updateViewModel.Id <= 0)
         {
@@ -167,6 +167,49 @@ public class CartoonApiService: ICartoonApiService
 
             //Task[] tasks = new Task[1];
             var cartoonResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
+
+            if (cartoonResponse == null)
+            {
+                // The requested id is not found
+                var correlationId = Guid.NewGuid();
+                // Write Not Found, requested Id, and correlation Id to log
+                return null;
+            }
+
+            var viewModel = new CartoonViewModel
+            {
+                Id = cartoonResponse.Id,
+                Title = cartoonResponse.Title,
+                Description = cartoonResponse.Description,
+                YearBegin = cartoonResponse.YearBegin,
+                YearEnd = cartoonResponse.YearEnd,
+                Rating = cartoonResponse.Rating
+            };
+
+            return viewModel;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
+        }
+    }
+
+    public async Task<CartoonInfoViewModel> GetCartoonInfoByIdAsync(int id)
+    {
+        try
+        {
+            var cartoonRequest = new CartoonSingleRequest
+            {
+                Id = id
+            };
+
+            //Task[] tasks = new Task[1];
+            var cartoonResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
            
             if (cartoonResponse == null)
             {
@@ -191,7 +234,7 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-    public async Task<IList<CartoonViewModel>> GetAllCartoonsAsync()
+    public async Task<IList<CartoonInfoViewModel>> GetAllCartoonInfosAsync()
     {
         try
         {
@@ -205,7 +248,7 @@ public class CartoonApiService: ICartoonApiService
                 return null;
             }
 
-            var cartoons = new List<CartoonViewModel>();
+            var cartoons = new List<CartoonInfoViewModel>();
             foreach (var c in getShowResponse.Cartoons)
             {
                 var currentCartoon = await MapCartoonAsync(c);
@@ -224,9 +267,9 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-    private async Task<CartoonViewModel> MapCartoonAsync(CartoonSaveRequest response)
+    private async Task<CartoonInfoViewModel> MapCartoonAsync(CartoonSaveRequest response)
     {
-        var currentCartoon = new CartoonViewModel
+        var currentCartoon = new CartoonInfoViewModel
         {
             Id = response.Id,
             Title = response.Title,

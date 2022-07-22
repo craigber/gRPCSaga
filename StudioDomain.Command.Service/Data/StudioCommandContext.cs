@@ -11,7 +11,7 @@ public class StudioCommandContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite(@"Filename=..\Data\Studios.db");
+        optionsBuilder.UseSqlite(@"Filename=..\Studios.db");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

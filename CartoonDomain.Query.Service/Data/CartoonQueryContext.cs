@@ -13,7 +13,7 @@ public class CartoonQueryContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite(@"Filename=..\Data\Cartoons.db");
+        optionsBuilder.UseSqlite(@"Filename=..\Cartoons.db");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
