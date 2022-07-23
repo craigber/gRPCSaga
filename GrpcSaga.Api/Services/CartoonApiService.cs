@@ -38,6 +38,51 @@ public class CartoonApiService: ICartoonApiService
         _studioDomainCommandService = studioCommandChannel.CreateGrpcService<IStudioDomainCommandService>();
     }
 
+    public async Task<CartoonViewModel?> CreateCartoonAsync(CartoonCreateViewModel createViewModel)
+    {
+        if (createViewModel == null)
+        {
+            var ex = new ArgumentNullException(nameof(createViewModel));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
+        }
+        try
+            { 
+            var createRequest = new CartoonCreateRequest
+            {
+                Title = createViewModel.Title,
+                YearBegin = createViewModel.YearBegin,
+                YearEnd = createViewModel.YearEnd,
+                Rating = createViewModel.Rating,
+                Description = createViewModel.Description,
+                StudioId = createViewModel.StudioId
+            };
+            var createResponse = await _cartoonDomainCommandService.CreateCartoonAsync(createRequest);
+            if (createResponse == null)
+            {
+                return null;
+            }
+            var responseViewModel = new CartoonViewModel
+            {
+                Id = createResponse.Id,
+                Title = createResponse.Title,
+                YearBegin = createResponse.YearBegin,
+                YearEnd = createResponse.YearEnd,
+                Rating = createResponse.Rating,
+                Description = createResponse.Description,
+                StudioId = createResponse.StudioId
+            };
+            return responseViewModel;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            throw;
+        }        
+    }
     public async Task<CharacterViewModel?> CreateCharacterAsync(CharacterCreateViewModel requestViewModel)
     {
         if (requestViewModel == null || string.IsNullOrEmpty(requestViewModel.Name) || requestViewModel.CartoonId < 1)

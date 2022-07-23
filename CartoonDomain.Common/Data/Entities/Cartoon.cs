@@ -4,6 +4,7 @@ namespace CartoonDomain.Common.Data.Entities;
 
 public class Cartoon
 {
+    [Required]
     public int Id { get; set; }
 
     [Required]

@@ -8,7 +8,7 @@ I was tasked at my job to create a demo/example/reference application that showe
 
 This sample application is a catalog of cartoons -- a Cartoonalogue.
 
-## Building and Running the application
+## Building and Running the Application
 1. Once you have the source on disk, run Visual Studio and open the GprcSaga solution
 2. Right-click on Solution 'GrpcSaga' (this is the top most item) in the Solution Explorer. 
 3. Select Properties (this is the bottom-most item) in the pop-menu.
@@ -17,6 +17,7 @@ This sample application is a catalog of cartoons -- a Cartoonalogue.
 6. Click OK
 7. Build and run the solution
 
+## Included VS Projects
 The sample is split into several projects:
 - Cartoonalogue
   - Cartoonalogue.Api: An ASP.Net Core Api project that provides a UI via a Swagger page. It makes REST calls from the browser to controllers. When you launch the solution inside Visual Studio, a Swagger page is presented where you can Try Out the API.
@@ -42,6 +43,9 @@ Useful links:
 ## Data access
 SQLite is used to make this application portable. The CQRS pattern is used to separate queries and commands. Eventually, the Saga Pattern will be used to enforce transactions to multiple database/domains.
 
-## Design tradeoffs
+The idea of entities representing the schema of a table is strictly enforced. An entity object does not exist outside of the domain layer...that's the job of a model. View models are exclusively used for the UI layer.
+
+## Design ideas and tradeoffs
 - There are libraries that support gRPC in a web frontend, but they are not officially supported by gRPC so the API is setup as a RESTful web service.
 - .proto files were not used because I was tasked with going code-first. I personally like this option but it means non-.Net clients won't work without additional effort.
+- It may seem there is lots of data mapping, but this gives more flexability. For example, using request and response objects means the data sent can be easily changed, espcially with the gRPC services.

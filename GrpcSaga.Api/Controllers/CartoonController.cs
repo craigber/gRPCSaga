@@ -173,5 +173,17 @@ public class CartoonalogueController : ControllerBase
             return NoContent();
         }
         return StatusCode(StatusCodes.Status201Created, viewModelResponse);
-    }    
+    }
+
+    [HttpPost]
+    [Route("Cartoon/Create")]
+    public async Task<IActionResult> CreateCartoonAsync(CartoonCreateViewModel viewModel)
+    {
+        var viewModelResponse = await _cartoonService.CreateCartoonAsync(viewModel);
+        if (viewModelResponse == null)
+        {
+            return NoContent();
+        }
+        return Ok(viewModelResponse);
+    }
 }

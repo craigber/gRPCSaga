@@ -16,6 +16,55 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
         _context = context;
     }
 
+    public async Task<CartoonCreateResponse?> CreateCartoonAsync(CartoonCreateRequest request, CallContext context = default)
+    {
+        if (request == null)
+        {
+            var ex = new ArgumentNullException(nameof(request));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
+        }
+
+        try
+        {
+            var cartoon = new Cartoon
+            {
+                Title = request.Title,
+                Description = request.Description,
+                YearBegin = request.YearBegin,
+                YearEnd = request.YearEnd,
+                Rating = request.Rating,
+                StudioId = request.StudioId
+            };
+            _context.Cartoons.Attach(cartoon);
+            _context.Entry(cartoon).State = EntityState.Added;
+            var createCount = await _context.SaveChangesAsync();
+            if (createCount != 1)
+            {
+                return null;
+            }
+            var response = new CartoonCreateResponse
+            {
+                Id = cartoon.Id,
+                Title = cartoon.Title,
+                YearBegin = cartoon.YearBegin,
+                YearEnd = cartoon.YearEnd,
+                Description = cartoon.Description,
+                StudioId = cartoon.StudioId
+            };
+            return response;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
+        }
+    }
+
     public async Task<CharacterCreateResponse?> CreateCharacterAsync(CharacterCreateRequest request, CallContext context = default)
     {
         if (request == null || string.IsNullOrEmpty(request.Name))
