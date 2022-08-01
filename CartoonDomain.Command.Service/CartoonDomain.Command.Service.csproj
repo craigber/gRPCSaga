@@ -19,7 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CartoonDomain.Common\CartoonDomain.Common.csproj" />
-    <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.csproj" />
+    <ProjectReference Include="..\CartoonDomain.Shared.Commands\CartoonDomain.Shared.Commands.csproj" />
+    <ProjectReference Include="..\GrpcSaga.Shared\CartoonDomain.Shared.Queries.csproj" />
   </ItemGroup>
 
 </Project>
