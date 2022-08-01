@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace CartoonDomain.Shared.Queries.v1.Contracts;
 
 [DataContract]
-public class CharacterSingleResponse
+public class CharacterResponse
 {
     [ProtoMember(1)]
     public int Id { get; set; }

@@ -23,4 +23,7 @@ public class CartoonCreateRequest
 
     [ProtoMember(6)]
     public int StudioId { get; set; }
+
+    [ProtoMember(7)]
+    public List<CharacterCreateRequest>? Characters { get; set; }
 }

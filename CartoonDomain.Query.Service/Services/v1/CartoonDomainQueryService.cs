@@ -17,7 +17,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         _context = context;
     }
 
-    public async Task<CartoonSaveRequest> GetCartoonByIdAsync(CartoonSingleRequest request, CallContext context = default)
+    public async Task<CartoonResponse> GetCartoonByIdAsync(CartoonRequest request, CallContext context = default)
     {
         if (request.Id <= 0)
         {
@@ -50,7 +50,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
     }
 
-    public async Task<CartoonMultipleResponse> GetAllCartoonsAsync(CallContext context = default)
+    public async Task<CartoonListResponse> GetAllCartoonsAsync(CallContext context = default)
     {
         try
         {
@@ -61,8 +61,8 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
                 return null;
             }
 
-            var response = new CartoonMultipleResponse();
-            response.Cartoons = new List<CartoonSaveRequest>();
+            var response = new CartoonListResponse();
+            response.Cartoons = new List<CartoonResponse>();
             foreach (var c in cartoons)
             {
                 response.Cartoons.Add(MapToSingleResponse(c));
@@ -80,9 +80,9 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
     }
 
-    private CartoonSaveRequest MapToSingleResponse(Cartoon cartoon)
+    private CartoonResponse MapToSingleResponse(Cartoon cartoon)
     {
-        var response = new CartoonSaveRequest
+        var response = new CartoonResponse
         {
             Id = cartoon.Id,
             Title = cartoon.Title,
@@ -95,10 +95,10 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
 
         if (cartoon.Characters != null && cartoon.Characters.Any())
         {
-            response.Characters = new List<CharacterSingleResponse>();
+            response.Characters = new List<CharacterResponse>();
             foreach (var character in cartoon.Characters)
             {
-                response.Characters.Add(new CharacterSingleResponse
+                response.Characters.Add(new CharacterResponse
                 {
                     Id = character.Id,
                     Name = character.Name,

@@ -16,6 +16,44 @@ public class StudioDomainCommandService : IStudioDomainCommandService
     {
         _context = context;
     }
+
+    public async Task<StudioDeleteResponse> DeleteStudioAsync(StudioDeleteRequest request, CallContext context = default)
+    {
+        if (request == null || request.Id <= 0)
+        {
+            var correlationId = Guid.NewGuid();
+            // Log issue
+            throw new ArgumentNullException($"Id: {correlationId}");
+        }
+
+        try
+        {
+            var studio = await _context.Studios.FindAsync(request.Id);
+            if (studio == null)
+            {
+                return new StudioDeleteResponse { Success = false };
+            }
+
+            _context.Studios.Remove(studio);
+            _context.Entry(studio).State = EntityState.Deleted;
+            var removeCount = _context.SaveChanges();
+            if (removeCount == 0)
+            {
+                return new StudioDeleteResponse { Success = false };
+            }
+
+            return new StudioDeleteResponse { Success = true };
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
+        }
+    }
         
     public async Task<StudioCreateResponse> CreateStudioAsync(StudioCreateRequest request, CallContext context = default)
     {

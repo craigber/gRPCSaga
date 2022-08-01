@@ -29,7 +29,7 @@ public class StudioDomainQueryService : IStudioDomainQueryService
             }
 
             var response = new StudioMultipleResponse();
-            response.Studios = new List<StudioSingleResponse>();
+            response.Studios = new List<StudioListResponse>();
             foreach (var s in studios)
             {
                 response.Studios.Add(MapToSingleResponse(s));
@@ -47,7 +47,7 @@ public class StudioDomainQueryService : IStudioDomainQueryService
         }
     }
 
-    public async Task<StudioSingleResponse> GetStudioByIdAsync(StudioSingleRequest request, CallContext context = default)
+    public async Task<StudioListResponse> GetStudioByIdAsync(StudioRequest request, CallContext context = default)
     {
         if (request.Id <= 0)
         {
@@ -80,9 +80,9 @@ public class StudioDomainQueryService : IStudioDomainQueryService
         }
     }
 
-    private StudioSingleResponse MapToSingleResponse(Studio studio)
+    private StudioListResponse MapToSingleResponse(Studio studio)
     {
-        var response = new StudioSingleResponse
+        var response = new StudioListResponse
         {
             Id = studio.Id,
             Name = studio.Name

@@ -26,4 +26,7 @@ public class CartoonCreateResponse
 
     [ProtoMember(7)]
     public int StudioId { get; set; }
+
+    [ProtoMember(8)]
+    public List<CharacterCreateResponse>? Characters { get; set; }
 }

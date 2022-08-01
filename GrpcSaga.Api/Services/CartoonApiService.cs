@@ -12,7 +12,7 @@ using Grpc.Net.Client;
 
 namespace Cartoonalogue.Api.Services;
 
-public class CartoonApiService: ICartoonApiService
+public class CartoonApiService : ICartoonApiService
 {
     private readonly ILogger<CartoonApiService> _logger;
     private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
@@ -38,6 +38,185 @@ public class CartoonApiService: ICartoonApiService
         _studioDomainCommandService = studioCommandChannel.CreateGrpcService<IStudioDomainCommandService>();
     }
 
+    private async Task<StudioViewModel?> InsertStudioAsync(StudioCreateViewModel studio)
+    {
+        var studioRequest = new StudioCreateRequest
+        {
+            Name = studio.Name
+        };
+        var studioResponse = await _studioDomainCommandService.CreateStudioAsync(studioRequest);
+        if (studioResponse == null)
+        {
+            // Studio insert failed
+            return null;
+        }
+        var response = new StudioViewModel
+        {
+            Id = studioResponse.Id,
+            Name = studioResponse.Name
+        };
+        return response;
+    }
+
+    private async Task<bool> CompensateStudioAsync(StudioViewModel studio)
+    {
+        var studioRequest = new StudioDeleteRequest
+        {
+            Id = studio.Id
+        };
+        var studioResponse = await _studioDomainCommandService.DeleteStudioAsync(studioRequest);
+        if (studioResponse == null)
+        {
+            // Log the delete failure
+        }
+        return studioResponse != null;
+    }
+
+    private async Task<CartoonViewModel?> InsertCartoonDetailsAsync(CartoonDetailsCreateViewModel createViewModel, int studioId)
+    {
+        var charactersCreateRequest = new List<CharacterCreateRequest>();
+        if (createViewModel.Characters != null && createViewModel.Characters.Count > 0)
+        {
+            foreach (var c in createViewModel.Characters)
+            {
+                charactersCreateRequest.Add(new CharacterCreateRequest
+                {
+                    Name = c.Name,
+                    Description = c.Description
+                });
+            }
+        }
+        var cartoonRequest = new CartoonCreateRequest
+        {
+            Title = createViewModel.Cartoon.Title,
+            Description = createViewModel.Cartoon.Description,
+            YearBegin = createViewModel.Cartoon.YearBegin,
+            YearEnd = createViewModel.Cartoon.YearEnd,
+            Rating = createViewModel.Cartoon.Rating,
+            StudioId = studioId,
+            Characters = charactersCreateRequest
+        };
+        var cartoonResponse = await _cartoonDomainCommandService.CreateCartoonAsync(cartoonRequest);
+        if (cartoonResponse == null)
+        {
+            // Cartoon insert failed
+            return null;
+        }
+
+        var charactersResponse = new List<CharacterViewModel>();
+        if (cartoonResponse.Characters != null && cartoonResponse.Characters.Count > 0)
+        {
+            foreach (var c in cartoonResponse.Characters)
+            {
+                charactersResponse.Add(new CharacterViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    CartoonId = c.CartoonId
+                });
+            }
+        }
+        var response = new CartoonViewModel
+        {
+            Id = cartoonResponse.Id,
+            Title = cartoonResponse.Title,
+            Description = cartoonResponse.Description,
+            YearBegin = cartoonResponse.YearBegin,
+            YearEnd = cartoonResponse.YearEnd,
+            Rating = cartoonResponse.Rating,
+            StudioId = cartoonResponse.StudioId
+        };
+        return response;
+    }
+
+
+    /////////////////////////////////////////////////////////////https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/error-handling
+
+    private async Task<List<CharacterViewModel?>> InsertCharacterListAsync(List<CharacterCreateViewModel> characters, CartoonViewModel cartoon)
+    {
+        return null;
+    }
+
+    public async Task<CartoonDetailsViewModel?> CreateCartoonDetailsAsync(CartoonDetailsCreateViewModel createViewModel)
+    {
+        if (createViewModel == null)
+        {
+            var ex = new ArgumentNullException(nameof(createViewModel));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
+        }
+        try
+        {
+            var isNewStudio = false;
+
+            // 1. Either insert or retrieve the studio
+            StudioViewModel? studioViewModel;
+            if (createViewModel.Cartoon.StudioId <= 0)
+            {
+                // Add new Studio
+                studioViewModel = await InsertStudioAsync(createViewModel.Studio);
+                if (studioViewModel == null)
+                {
+                    // Studio database update failed
+                    return null;
+                }
+                isNewStudio = true;
+            }
+            else
+            {
+                // Studio already exists so retrieve it
+                var studioRequest = new StudioRequest
+                {
+                    Id = createViewModel.Cartoon.StudioId
+                };
+                var studioResponse = await _studioDomainQueryService.GetStudioByIdAsync(studioRequest);
+                studioViewModel = new StudioViewModel
+                {
+                    Id = studioResponse.Id,
+                    Name = studioResponse.Name
+                };
+            }
+
+            // 2. Insert Cartoon
+            var cartoonViewModel = await InsertCartoonDetailsAsync(createViewModel, studioViewModel.Id);
+            if (cartoonViewModel == null)
+            {
+                // Cartoon database update failed
+                if (isNewStudio)
+                {
+                    await CompensateStudioAsync(studioViewModel);
+                }
+                return null;
+            }
+
+            var response = new CartoonDetailsViewModel
+            {
+                Cartoon = cartoonViewModel,
+                Studio = studioViewModel
+            };
+            return response;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            throw;
+        }
+
+    }
+
+    private async Task DeleteStudioAsync(int id)
+    {
+        var request = new StudioDeleteRequest
+        {
+            Id = id
+        };
+        var response = await _studioDomainCommandService.DeleteStudioAsync(request);
+    }
+
     public async Task<CartoonViewModel?> CreateCartoonAsync(CartoonCreateViewModel createViewModel)
     {
         if (createViewModel == null)
@@ -47,7 +226,7 @@ public class CartoonApiService: ICartoonApiService
             throw ex;
         }
         try
-            { 
+        {
             var createRequest = new CartoonCreateRequest
             {
                 Title = createViewModel.Title,
@@ -81,7 +260,7 @@ public class CartoonApiService: ICartoonApiService
                 ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
             }
             throw;
-        }        
+        }
     }
     public async Task<CharacterViewModel?> CreateCharacterAsync(CharacterCreateViewModel requestViewModel)
     {
@@ -97,6 +276,7 @@ public class CartoonApiService: ICartoonApiService
             var createRequest = new CharacterCreateRequest
             {
                 Name = requestViewModel.Name,
+                Description = requestViewModel.Description,
                 CartoonId = requestViewModel.CartoonId
             };
             var createResponse = await _cartoonDomainCommandService.CreateCharacterAsync(createRequest);
@@ -108,6 +288,7 @@ public class CartoonApiService: ICartoonApiService
             {
                 Id = createResponse.Id,
                 Name = createResponse.Name,
+                Description = createResponse.Description,
                 CartoonId = createResponse.CartoonId
             };
             return responseViewModel;
@@ -158,7 +339,7 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-     public async Task<CartoonInfoViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
+    public async Task<CartoonViewModel> UpdateCartoonAsync(CartoonUpdateViewModel updateViewModel)
     {
         if (updateViewModel == null || updateViewModel.Id <= 0)
         {
@@ -180,7 +361,7 @@ public class CartoonApiService: ICartoonApiService
             };
             var updateResponse = await _cartoonDomainCommandService.UpdateCartoonAsync(updateRequest);
 
-            var cartoonRequest = new CartoonSingleRequest
+            var cartoonRequest = new CartoonRequest
             {
                 Id = updateViewModel.Id
             };
@@ -203,14 +384,14 @@ public class CartoonApiService: ICartoonApiService
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
     {
+        // TODO: Change this to not return characters
         try
         {
-            var cartoonRequest = new CartoonSingleRequest
+            var cartoonRequest = new CartoonRequest
             {
                 Id = id
             };
 
-            //Task[] tasks = new Task[1];
             var cartoonResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
 
             if (cartoonResponse == null)
@@ -228,7 +409,8 @@ public class CartoonApiService: ICartoonApiService
                 Description = cartoonResponse.Description,
                 YearBegin = cartoonResponse.YearBegin,
                 YearEnd = cartoonResponse.YearEnd,
-                Rating = cartoonResponse.Rating
+                Rating = cartoonResponse.Rating,
+                StudioId = cartoonResponse.StudioId
             };
 
             return viewModel;
@@ -244,18 +426,17 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-    public async Task<CartoonInfoViewModel> GetCartoonInfoByIdAsync(int id)
+    public async Task<CartoonDetailsViewModel> GetCartoonDetailsByIdAsync(int id)
     {
         try
         {
-            var cartoonRequest = new CartoonSingleRequest
+            var cartoonRequest = new CartoonRequest
             {
                 Id = id
             };
 
-            //Task[] tasks = new Task[1];
             var cartoonResponse = await _cartoonDomainQueryService.GetCartoonByIdAsync(cartoonRequest);
-           
+
             if (cartoonResponse == null)
             {
                 // The requested id is not found
@@ -264,7 +445,7 @@ public class CartoonApiService: ICartoonApiService
                 return null;
             }
 
-            var viewModelResponse = await MapCartoonAsync(cartoonResponse);
+            var viewModelResponse = await MapCartoonDetailsAsync(cartoonResponse);
 
             return viewModelResponse;
         }
@@ -279,8 +460,9 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-    public async Task<IList<CartoonInfoViewModel>> GetAllCartoonInfosAsync()
+    public async Task<IList<CartoonViewModel>> GetCartoonListAsync()
     {
+        // TODO: Change this to just cartoon, not info
         try
         {
             var getShowResponse = await _cartoonDomainQueryService.GetAllCartoonsAsync();
@@ -293,7 +475,7 @@ public class CartoonApiService: ICartoonApiService
                 return null;
             }
 
-            var cartoons = new List<CartoonInfoViewModel>();
+            var cartoons = new List<CartoonViewModel>();
             foreach (var c in getShowResponse.Cartoons)
             {
                 var currentCartoon = await MapCartoonAsync(c);
@@ -312,9 +494,9 @@ public class CartoonApiService: ICartoonApiService
         }
     }
 
-    private async Task<CartoonInfoViewModel> MapCartoonAsync(CartoonSaveRequest response)
+    private async Task<CartoonViewModel> MapCartoonAsync(CartoonResponse response)
     {
-        var currentCartoon = new CartoonInfoViewModel
+        var currentCartoon = new CartoonViewModel
         {
             Id = response.Id,
             Title = response.Title,
@@ -322,23 +504,45 @@ public class CartoonApiService: ICartoonApiService
             YearEnd = response.YearEnd,
             Description = response.Description,
             Rating = response.Rating,
-            StudioId = response.StudioId,
-            StudioName = (await _studioDomainQueryService.GetStudioByIdAsync(new StudioSingleRequest { Id = response.StudioId })).Name
+            StudioId = response.StudioId
+        };
+        return currentCartoon;
+    }
+
+    private async Task<CartoonDetailsViewModel> MapCartoonDetailsAsync(CartoonResponse response)
+    {
+        var cartoonDetails = new CartoonDetailsViewModel
+        {
+            Cartoon = new CartoonViewModel
+            {
+                Id = response.Id,
+                Title = response.Title,
+                YearBegin = response.YearBegin,
+                YearEnd = response.YearEnd,
+                Description = response.Description,
+                Rating = response.Rating,
+                StudioId= response.StudioId
+            },
+            Studio = new StudioViewModel
+            {
+                Id = response.StudioId,
+                Name = (await _studioDomainQueryService.GetStudioByIdAsync(new StudioRequest { Id = response.StudioId })).Name
+            }
         };
         if (response.Characters.Any())
         {
-            currentCartoon.Characters = new List<CharacterViewModel>();
-            foreach (var ch in response.Characters)
+            cartoonDetails.Characters = new List<CharacterViewModel>();
+            foreach (var c in response.Characters)
             {
-                currentCartoon.Characters.Add(new CharacterViewModel
+                cartoonDetails.Characters.Add(new CharacterViewModel
                 {
-                    Id = ch.Id,
-                    Name = ch.Name,
-                    Description = ch.Description,
-                    CartoonId = ch.CartoonId
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    CartoonId = c.CartoonId
                 });
             }
         }
-        return currentCartoon;
+        return cartoonDetails;
     }
 }

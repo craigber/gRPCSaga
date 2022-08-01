@@ -8,7 +8,7 @@ namespace StudioDomain.Shared.Queries.v1.Interfaces;
 public interface IStudioDomainQueryService
 {
     [OperationContract]
-    Task<StudioSingleResponse> GetStudioByIdAsync(StudioSingleRequest request, CallContext context = default);
+    Task<StudioListResponse> GetStudioByIdAsync(StudioRequest request, CallContext context = default);
 
     [OperationContract]
     Task<StudioMultipleResponse> GetAllStudiosAsync(CallContext context = default);

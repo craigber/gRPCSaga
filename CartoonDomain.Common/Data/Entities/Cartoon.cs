@@ -16,7 +16,7 @@ public class Cartoon
     public string? Description { get; set; }
     public decimal? Rating { get; set; }
     public int StudioId { get; set; }
-    public virtual IEnumerable<Character> Characters { get; set; }
+    public virtual IList<Character> Characters { get; set; }
 
     public bool IsValid()
     {

@@ -19,4 +19,8 @@ public interface ICartoonDomainCommandService
 
     [OperationContract]
     Task<CharacterCreateResponse?> CreateCharacterAsync(CharacterCreateRequest request, CallContext context = default);
+
+    Task<CartoonDetailsCreateResponse?> CreateCartoonDetailsAsync(CartoonDetailsCreateRequest request, CallContext context = default);
+
+    //Task<CharacterListCreateResponse?> CreateCharacterListAsync(CharacterListCreateRequest request, CallContext context = default);
 }

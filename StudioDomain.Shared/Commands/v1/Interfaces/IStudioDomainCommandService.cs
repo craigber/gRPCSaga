@@ -8,5 +8,6 @@ namespace StudioDomain.Shared.Commands.v1.Interfaces;
 public interface IStudioDomainCommandService
 {
     [OperationContract]
-    Task<StudioCreateResponse> CreateStudioAsync(StudioCreateRequest request, CallContext context = default);
+    Task<StudioCreateResponse?> CreateStudioAsync(StudioCreateRequest request, CallContext context = default);
+    Task<StudioDeleteResponse?> DeleteStudioAsync(StudioDeleteRequest request, CallContext context = default);
 }

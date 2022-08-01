@@ -7,13 +7,99 @@ using CartoonDomain.Common.Data.Entities;
 
 namespace CartoonDomain.Service.Services.Commands.v1;
 
-public class CartoonDomainCommandService : ICartoonDomainCommandService
+public class CommandService : ICartoonDomainCommandService
 {
+    // TODO: https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/error-handling
+
     private readonly CartoonCommandContext _context;
 
-    public CartoonDomainCommandService(CartoonCommandContext context)
+    public CommandService(CartoonCommandContext context)
     {
         _context = context;
+    }
+
+    public async Task<CartoonDetailsCreateResponse?> CreateCartoonDetailsAsync(CartoonDetailsCreateRequest request, CallContext context = default)
+    {
+        if (request == null)
+        {
+            var ex = new ArgumentNullException(nameof(request));
+            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            throw ex;
+        }
+
+        try
+        {
+            var characters = new List<Character>();
+            if (request.Characters.Any())
+            {
+                //cartoon.Characters = new List<Character>();
+                foreach (var character in request.Characters)
+                {
+                    var newCharacter = new Character
+                    {
+                        Name = character.Name,
+                        Description = character.Description
+                        //CartoonId = cartoon.Id
+                    };
+                    await _context.Characters.AddAsync(newCharacter);
+                    _context.Entry(newCharacter).State = EntityState.Added;
+                }
+            }
+
+            var cartoon = new Cartoon
+            {
+                Title = request.Cartoon.Title,
+                Description = request.Cartoon.Description,
+                YearBegin = request.Cartoon.YearBegin,
+                YearEnd = request.Cartoon.YearEnd,
+                Rating = request.Cartoon.Rating,
+                StudioId = request.Cartoon.StudioId,
+                Characters = characters
+            };
+            await _context.Cartoons.AddAsync(cartoon);
+
+            var cartoonSaveCount = _context.SaveChanges();
+            if (cartoonSaveCount != characters.Count + 1)
+            {
+                // Entity Framework will automatically roll back the updates to the Cartoon domain
+                // The Studio domain must be compensated. This happens in the calling service
+                return null;
+            }
+            var chars = new List<CharacterCreateResponse>();
+            foreach(var c in characters)
+            {
+                chars.Add(new CharacterCreateResponse
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    CartoonId = c.CartoonId
+                });
+            };
+            var response = new CartoonDetailsCreateResponse
+            {
+                Cartoon = new CartoonCreateResponse
+                {
+                    Id = cartoon.Id,
+                    Title = cartoon.Title,
+                    YearBegin = cartoon.YearBegin,
+                    YearEnd = cartoon.YearEnd,
+                    Rating = cartoon.Rating,
+                    Description = cartoon.Description
+                },
+                Characters = chars
+            };
+            return response;
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Write to log
+            throw;
+        }
     }
 
     public async Task<CartoonCreateResponse?> CreateCartoonAsync(CartoonCreateRequest request, CallContext context = default)
@@ -50,6 +136,7 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
                 YearBegin = cartoon.YearBegin,
                 YearEnd = cartoon.YearEnd,
                 Description = cartoon.Description,
+                Rating = cartoon.Rating,
                 StudioId = cartoon.StudioId
             };
             return response;
@@ -63,6 +150,7 @@ public class CartoonDomainCommandService : ICartoonDomainCommandService
             // Write to log
             throw;
         }
+
     }
 
     public async Task<CharacterCreateResponse?> CreateCharacterAsync(CharacterCreateRequest request, CallContext context = default)

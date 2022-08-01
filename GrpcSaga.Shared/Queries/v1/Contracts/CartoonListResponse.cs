@@ -9,8 +9,8 @@ using System.Runtime.Serialization;
 namespace CartoonDomain.Shared.Queries.v1.Contracts;
 
 [ProtoContract]
-public class CartoonMultipleResponse
+public class CartoonListResponse
 {
     [ProtoMember(1)]
-    public IList<CartoonSaveRequest> Cartoons { get; set; }
+    public IList<CartoonResponse> Cartoons { get; set; }
 }
