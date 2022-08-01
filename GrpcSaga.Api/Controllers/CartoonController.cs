@@ -78,14 +78,14 @@ public class CartoonalogueController : ControllerBase
     /// <remarks>
     /// Sample request:
     /// 
-    ///     POST /Cartoon/CreateIfno
+    ///     POST /Cartoon/CreateDetails
     /// </remarks>
     /// <response code="200">Returns the request was successful</response>
     /// <response code="204">The requested cartoon, characters, or studio could not be created</response>
     /// <response code="400">The specified id is invalid</response>
     /// <response code="500">Unkown error. Check error logs</response>
     [HttpPost()]
-    [Route("Cartoon/CreateInfo")]
+    [Route("Cartoon/CreateDetails")]
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CartoonDetailsViewModel))]
@@ -102,8 +102,6 @@ public class CartoonalogueController : ControllerBase
         return Ok(viewModelResponse);
     }
 
-
-
     /// <summary>
     /// Gets the specified Cartoon, its characters, and studio name
     /// </summary>
@@ -119,7 +117,7 @@ public class CartoonalogueController : ControllerBase
     /// <response code="400">If the id is less than 1</response>
     /// <response code="404">If the specified Cartoon Id is not found</response>
     /// <response code="500">Unkown error. Check error logs</response>
-[Consumes("text/plain")]
+    [Consumes("text/plain")]
     [Produces("application/json")]
     [HttpGet()]
     [Route("Cartoon/{id}/Details")]

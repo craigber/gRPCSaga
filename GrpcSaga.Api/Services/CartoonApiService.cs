@@ -75,7 +75,7 @@ public class CartoonApiService : ICartoonApiService
     private async Task<CartoonViewModel?> InsertCartoonDetailsAsync(CartoonDetailsCreateViewModel createViewModel, int studioId)
     {
         var charactersCreateRequest = new List<CharacterCreateRequest>();
-        if (createViewModel.Characters != null && createViewModel.Characters.Count > 0)
+        if (createViewModel.Characters != null && createViewModel.Characters.Any())
         {
             foreach (var c in createViewModel.Characters)
             {
@@ -86,17 +86,21 @@ public class CartoonApiService : ICartoonApiService
                 });
             }
         }
-        var cartoonRequest = new CartoonCreateRequest
+        var cartoonRequest = new CartoonDetailsCreateRequest
         {
-            Title = createViewModel.Cartoon.Title,
-            Description = createViewModel.Cartoon.Description,
-            YearBegin = createViewModel.Cartoon.YearBegin,
-            YearEnd = createViewModel.Cartoon.YearEnd,
-            Rating = createViewModel.Cartoon.Rating,
-            StudioId = studioId,
-            Characters = charactersCreateRequest
+            Cartoon = new CartoonCreateRequest
+            {
+                Title = createViewModel.Cartoon.Title,
+                Description = createViewModel.Cartoon.Description,
+                YearBegin = createViewModel.Cartoon.YearBegin,
+                YearEnd = createViewModel.Cartoon.YearEnd,
+                Rating = createViewModel.Cartoon.Rating,
+                StudioId = studioId,
+                Characters = charactersCreateRequest
+            }
         };
-        var cartoonResponse = await _cartoonDomainCommandService.CreateCartoonAsync(cartoonRequest);
+
+        var cartoonResponse = await _cartoonDomainCommandService.CreateCartoonDetailsAsync(cartoonRequest);
         if (cartoonResponse == null)
         {
             // Cartoon insert failed
@@ -104,9 +108,9 @@ public class CartoonApiService : ICartoonApiService
         }
 
         var charactersResponse = new List<CharacterViewModel>();
-        if (cartoonResponse.Characters != null && cartoonResponse.Characters.Count > 0)
+        if (cartoonResponse.Cartoon.Characters != null && cartoonResponse.Cartoon.Characters.Count > 0)
         {
-            foreach (var c in cartoonResponse.Characters)
+            foreach (var c in cartoonResponse.Cartoon.Characters)
             {
                 charactersResponse.Add(new CharacterViewModel
                 {
@@ -117,16 +121,19 @@ public class CartoonApiService : ICartoonApiService
                 });
             }
         }
+        
         var response = new CartoonViewModel
         {
-            Id = cartoonResponse.Id,
-            Title = cartoonResponse.Title,
-            Description = cartoonResponse.Description,
-            YearBegin = cartoonResponse.YearBegin,
-            YearEnd = cartoonResponse.YearEnd,
-            Rating = cartoonResponse.Rating,
-            StudioId = cartoonResponse.StudioId
+            Id = cartoonResponse.Cartoon.Id,
+            Title = cartoonResponse.Cartoon.Title,
+            Description = cartoonResponse.Cartoon.Description,
+            YearBegin = cartoonResponse.Cartoon.YearBegin,
+            YearEnd = cartoonResponse.Cartoon.YearEnd,
+            Rating = cartoonResponse.Cartoon.Rating,
+            StudioId = cartoonResponse.Cartoon.StudioId,
+            Characters = charactersResponse
         };
+
         return response;
     }
 
@@ -205,7 +212,6 @@ public class CartoonApiService : ICartoonApiService
             }
             throw;
         }
-
     }
 
     private async Task DeleteStudioAsync(int id)
@@ -531,10 +537,10 @@ public class CartoonApiService : ICartoonApiService
         };
         if (response.Characters.Any())
         {
-            cartoonDetails.Characters = new List<CharacterViewModel>();
+            cartoonDetails.Cartoon.Characters = new List<CharacterViewModel>();
             foreach (var c in response.Characters)
             {
-                cartoonDetails.Characters.Add(new CharacterViewModel
+                cartoonDetails.Cartoon.Characters.Add(new CharacterViewModel
                 {
                     Id = c.Id,
                     Name = c.Name,

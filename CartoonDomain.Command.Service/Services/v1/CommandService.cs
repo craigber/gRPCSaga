@@ -29,23 +29,6 @@ public class CommandService : ICartoonDomainCommandService
 
         try
         {
-            var characters = new List<Character>();
-            if (request.Characters.Any())
-            {
-                //cartoon.Characters = new List<Character>();
-                foreach (var character in request.Characters)
-                {
-                    var newCharacter = new Character
-                    {
-                        Name = character.Name,
-                        Description = character.Description
-                        //CartoonId = cartoon.Id
-                    };
-                    await _context.Characters.AddAsync(newCharacter);
-                    _context.Entry(newCharacter).State = EntityState.Added;
-                }
-            }
-
             var cartoon = new Cartoon
             {
                 Title = request.Cartoon.Title,
@@ -53,18 +36,51 @@ public class CommandService : ICartoonDomainCommandService
                 YearBegin = request.Cartoon.YearBegin,
                 YearEnd = request.Cartoon.YearEnd,
                 Rating = request.Cartoon.Rating,
-                StudioId = request.Cartoon.StudioId,
-                Characters = characters
+                StudioId = request.Cartoon.StudioId
             };
             await _context.Cartoons.AddAsync(cartoon);
-
             var cartoonSaveCount = _context.SaveChanges();
-            if (cartoonSaveCount != characters.Count + 1)
+
+            if (cartoonSaveCount != 1)
             {
-                // Entity Framework will automatically roll back the updates to the Cartoon domain
-                // The Studio domain must be compensated. This happens in the calling service
+                // Cartoon save failed. Entity Framework will automatically rollback the transaction.
+                // However, because the Studio is saved in a different domain and transaction,
+                // it must be compensated. This is done in the calling service
                 return null;
             }
+
+            // Now that the cartoon has been created, create the characters
+            if (request.Cartoon.Characters != null && request.Cartoon.Characters.Any())
+            {
+                //cartoon.Characters = new List<Character>();
+                foreach (var character in request.Cartoon.Characters)
+                {
+                    var newCharacter = new Character
+                    {
+                        Name = character.Name,
+                        Description = character.Description,
+                        CartoonId = cartoon.Id
+                    };
+                    await _context.Characters.AddAsync(newCharacter);
+                    _context.Entry(newCharacter).State = EntityState.Added;
+                }
+                var characterSaveCount = await _context.SaveChangesAsync();
+                if (characterSaveCount != request.Cartoon.Characters.Count)
+                {
+                    // One or more charactes were not created but because they are all part of the
+                    // same transaction, they were all rolled back. We now need to compensate
+                    // the create for the Cartoon
+                    _context.Remove(cartoon);
+                    await _context.SaveChangesAsync();
+
+                    // Now the creation of the Studio needs to be compensated but because
+                    // it's a different domain and that transaction has completed, it must
+                    // be compensated in the calling service
+                    return null;                    
+                }
+            }
+
+            var characters = _context.Characters.Where(c => c.CartoonId == cartoon.Id);
             var chars = new List<CharacterCreateResponse>();
             foreach(var c in characters)
             {
