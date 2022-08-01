@@ -71,6 +71,127 @@ public class CartoonalogueController : ControllerBase
     }
 
     /// <summary>
+    /// Gets the specified Cartoon, its characters, and studio name
+    /// </summary>
+    /// <param name="id">The unique Id for the cartoon.</param>
+    /// <returns>The the specified CartoonDetailsViewModel (The specified Cartoon, a list of it's Characters, and the Studio name.)</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     GET /Cartoon/Info/3
+    ///     
+    /// </remarks>
+    /// <response code="200">Returns a CartoonDetailsViewModel object for the specified id</response>
+    /// <response code="400">If the id is less than 1</response>
+    /// <response code="404">If the specified Cartoon Id is not found</response>
+    /// <response code="500">Unkown error. Check error logs</response>
+    [Consumes("text/plain")]
+    [Produces("application/json")]
+    [HttpGet()]
+    [Route("Cartoon/{id}/Details")]
+    public async Task<IActionResult> GetCartoonDetailsById(int id)
+    {
+        if (id < 1)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var viewModelResponse = await _apiService.GetCartoonDetailsByIdAsync(id);
+
+            if (viewModelResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(viewModelResponse);
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Log exception info
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Gets a list of all cartoons
+    /// </summary>
+    /// <returns>List of CartoonViewModel</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     GET Cartoon/List
+    /// </remarks>
+    /// <response code="200">The request was successful</response>
+    /// <response code="500">Unkown error. Check error logs</response>
+    [HttpGet]
+    [Route("Cartoon/List")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CartoonViewModel>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+    public async Task<IActionResult> GetCartoonListAsync()
+    {
+        try
+        {
+            var viewModelResponse = await _apiService.GetCartoonListAsync();
+
+            if (viewModelResponse == null)
+            {
+                return NotFound();
+            }
+            return Ok(viewModelResponse);
+        }
+        catch (Exception ex)
+        {
+            if (!ex.Data.Contains("CorrelationId"))
+            {
+                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+            }
+            // Log exception info
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Creates a new Cartoon
+    /// </summary>
+    /// <param name="viewModel">An instance of a CartoonCreateViewModel</param>
+    /// <returns>The newly creates Cartoon</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST Cartoon/Create
+    ///     
+    /// </remarks>
+    /// <response code="200">If the creation was successfule. Returns a CartoonViewModel object for the specified id</response>
+    /// <response code="400">If the StudioCreateViewModel is invalid</response>
+    /// <response code="500">Unkown error. Check error logs</response>
+    [HttpPost]
+    [Route("Cartoon/Create")]
+    public async Task<IActionResult> CreateCartoonAsync(CartoonCreateViewModel viewModel)
+    {
+        try
+        {
+            var viewModelResponse = await _apiService.CreateCartoonAsync(viewModel);
+            if (viewModelResponse == null)
+            {
+                return NoContent();
+            }
+            return Ok(viewModelResponse);
+        }
+        catch (Exception ex)
+        {
+            // log exception
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Data["CorrelationId"].ToString());
+        }
+    }
+
+    /// <summary>
     /// Creates a specifc Cartoon, it's characters, and studio. This endpoint uses a Saga to compensate across domains
     /// </summary>
     /// <param name="viewModel">An instance of the CartoonDetailsCreateViewModel class</param>
@@ -101,79 +222,7 @@ public class CartoonalogueController : ControllerBase
         }
         return Ok(viewModelResponse);
     }
-
-    /// <summary>
-    /// Gets the specified Cartoon, its characters, and studio name
-    /// </summary>
-    /// <param name="id">The unique Id for the cartoon.</param>
-    /// <returns>The the specified CartoonDetailsViewModel (The specified Cartoon, a list of it's Characters, and the Studio name.)</returns>
-    /// <remarks>
-    /// Sample request:
-    /// 
-    ///     GET /Cartoon/Info/3
-    ///     
-    /// </remarks>
-    /// <response code="200">Returns a CartoonDetailsViewModel object for the specified id</response>
-    /// <response code="400">If the id is less than 1</response>
-    /// <response code="404">If the specified Cartoon Id is not found</response>
-    /// <response code="500">Unkown error. Check error logs</response>
-    [Consumes("text/plain")]
-    [Produces("application/json")]
-    [HttpGet()]
-    [Route("Cartoon/{id}/Details")]
-    public async Task<IActionResult> GetCartoonDetailsById(int id)
-    {
-        if (id < 1)
-        {
-            return BadRequest();
-        }
-
-        try
-        {
-            var viewModelResponse = await _apiService.GetCartoonDetailsByIdAsync(id); 
-
-            if (viewModelResponse == null)
-            {
-                return NotFound();
-            }
-            return Ok(viewModelResponse);
-        }
-        catch (Exception ex)
-        {
-            if (!ex.Data.Contains("CorrelationId"))
-            {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            }
-            // Log exception info
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
-
-    [HttpGet]
-    [Route("Cartoon/List")]
-    public async Task<IActionResult> GetCartoonListAsync()
-    {
-        try
-        {
-            var viewModelResponse = await _apiService.GetCartoonListAsync();
-
-            if (viewModelResponse == null)
-            {
-                return NotFound();
-            }
-            return Ok(viewModelResponse);
-        }
-        catch (Exception ex)
-        {
-            if (!ex.Data.Contains("CorrelationId"))
-            {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            }
-            // Log exception info
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
-
+        
     /// <summary>
     /// Updates a specifc Cartoon
     /// </summary>
@@ -237,8 +286,27 @@ public class CartoonalogueController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Creates a new Studio
+    /// </summary>
+    /// <param name="viewModel">An instance of a StudioCreateViewModel</param>
+    /// <returns>The newly create Studio</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST Studio/Create
+    ///     
+    /// </remarks>
+    /// <response code="200">If the creation was successfule. Returns a StudioViewModel object for the specified id</response>
+    /// <response code="400">If the StudioCreateViewModel is invalid</response>
+    /// <response code="500">Unkown error. Check error logs</response>
     [HttpPost]
     [Route("Studio/Create")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudioViewModel))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]    
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<IActionResult> CreateStudioAsync(StudioCreateViewModel viewModel)
     {
         try
@@ -262,8 +330,27 @@ public class CartoonalogueController : ControllerBase
         }
     }
 
-    [HttpPost]
+    /// <summary>
+    /// Creates a new Character
+    /// </summary>
+    /// <param name="viewModel">An instance of a CharacterCreateViewModel</param>
+    /// <returns>The newly created Character</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST Character/Create
+    ///     
+    /// </remarks>
+    /// <response code="200">If the creation was successfule. Returns a CharacterViewModel object for the specified id</response>
+    /// <response code="400">If the StudioCreateViewModel is invalid</response>
+    /// <response code="500">Unkown error. Check error logs</response>[HttpPost]
     [Route("Character/Create")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CharacterViewModel))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<IActionResult> CreateCharacterAsync(CharacterCreateViewModel viewModel)
     {
         try
@@ -286,23 +373,4 @@ public class CartoonalogueController : ControllerBase
         }
     }
 
-    [HttpPost]
-    [Route("Cartoon/Create")]
-    public async Task<IActionResult> CreateCartoonAsync(CartoonCreateViewModel viewModel)
-    {
-        try
-        {
-            var viewModelResponse = await _apiService.CreateCartoonAsync(viewModel);
-            if (viewModelResponse == null)
-            {
-                return NoContent();
-            }
-            return Ok(viewModelResponse);
-        }
-        catch (Exception ex)
-        {
-            // log exception
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Data["CorrelationId"].ToString());
-        }
-    }
 }

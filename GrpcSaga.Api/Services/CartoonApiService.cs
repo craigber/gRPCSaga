@@ -145,7 +145,7 @@ public class CartoonApiService : ICartoonApiService
         return null;
     }
 
-    public async Task<CartoonDetailsViewModel?> CreateCartoonDetailsAsync(CartoonDetailsCreateViewModel createViewModel)
+    public async Task<CartoonDetailsViewModel>? CreateCartoonDetailsAsync(CartoonDetailsCreateViewModel createViewModel)
     {
         if (createViewModel == null)
         {
@@ -223,7 +223,7 @@ public class CartoonApiService : ICartoonApiService
         var response = await _studioDomainCommandService.DeleteStudioAsync(request);
     }
 
-    public async Task<CartoonViewModel?> CreateCartoonAsync(CartoonCreateViewModel createViewModel)
+    public async Task<CartoonViewModel>? CreateCartoonAsync(CartoonCreateViewModel createViewModel)
     {
         if (createViewModel == null)
         {
