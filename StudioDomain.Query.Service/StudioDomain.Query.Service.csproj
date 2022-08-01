@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StudioDomain.Common\StudioDomain.Common.csproj" />
-    <ProjectReference Include="..\StudioDomain.Shared\StudioDomain.Shared.csproj" />
+    <ProjectReference Include="..\StudioDomain.Shared\StudioDomain.Shared.Queries.csproj" />
   </ItemGroup>
 
 </Project>

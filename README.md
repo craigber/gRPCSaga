@@ -30,12 +30,14 @@ The sample is split into several projects:
   - CartoonDomain.Query.Service: A gRPC server for CQRS queries into the Cartoon Domain
   - CartoonDomain.Command.Service: A gRPC server for CQRS commands into the Cartoon Domain
   - CartoonDomain.Common: A class library of common code used by the Cartoon Domain server projects
-  - CartoonDomain.Shared: A public class library to be shared with client projects. In a real application, this project would most likely be a Cartoon Domain Nuget package
+  - CartoonDomain.Shared.Commands: A public class library to be shared with client projects that send commands to the domain. In a real application, this project would most likely be a Cartoon Domain Nuget package
+  - CartoonDomain.Shared.Queries: A public class library to be shared with client projects that send queries to the domain. In a real application, this project would most likely be a Cartoon Domain Nuget package
 - Studio Domain
   - StudioDomain.Query.Service: A gRPC server for CQRS queries into the Studio Domain
   - StudioDomain.Command.Service: A gRPC server for CQRS commands into the Studio Domain
   - StudioDomain.Common: A class library of common code used the Studio Domain server projects
-  - StudioDomain.Shared: A public class library to be shared with client projects. In a real application, this project would most likely be a Studio Domain Nuget package
+  - StudioDomain.Shared.Commands: A public class library to be shared with client projects that send commands to the domain. In a real application, this project would most likely be a Studio Domain Nuget package
+  - StudioDomain.Shared.Queries: A public class library to be shared with client projects that send queries to the domain. In a real application, this project would most likely be a Studio Domain Nuget package
 
 ## gRPC Information
 
@@ -49,7 +51,7 @@ Useful links:
 
 ## Data access
 
-SQLite is used to make this application portable. The CQRS pattern is used to separate queries and commands. Eventually, the Saga Pattern will be used to enforce transactions to multiple database/domains. The Cartoon/CreateDetails endpoint uses a Saga to ensure all the data is saved properly.
+SQLite is used to make this application portable. The CQRS pattern is used to separate queries and commands. The Saga Pattern will be used to handle cross-domain transactions. The Cartoon/CreateDetails endpoint uses a Saga to ensure all the data is saved properly.
 
 The idea of entities representing the schema of a table is strictly enforced. An entity object does not exist outside of the domain layer...that's the job of a model. View models are exclusively used for the UI layer.
 
@@ -61,10 +63,11 @@ The idea of entities representing the schema of a table is strictly enforced. An
 
 ## ToDo
 Several areas of the code still need some work.
-- Split CartoonDomain.Shared and StudioDomain.Shared into separate packages for Commands and Queries. 
 - Exceptions don't properly propagate to the API layer. This is due to how gRPC handles them.
 - Setup of gRPC needs to be moved to appropriate program.cs files.
 - Research into if the gRPC calls need to be inside a using statement so there is proper garbage collection.
 - Registration of gRPC services without using generic types. Some type of Reflection should be used.
 - Experimentation with Postman to see if it can be used to test gRPC servers. This would undoubtedly require .proto files.
 - General code cleanup. As this was an experimental project, the code is not very clean.
+- Clean up compile warnings
+- Split the gRPC servers into and API and Service projects

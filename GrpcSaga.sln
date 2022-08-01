@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Query.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cartoonalogue.Api", "GrpcSaga.Api\Cartoonalogue.Api.csproj", "{9C711814-F689-4327-9C47-CA41B049653E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Shared", "GrpcSaga.Shared\CartoonDomain.Shared.csproj", "{6DEACC1E-26D8-4E6D-8153-83508B9CCD1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Shared.Queries", "GrpcSaga.Shared\CartoonDomain.Shared.Queries.csproj", "{6DEACC1E-26D8-4E6D-8153-83508B9CCD1B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioDomain.Query.Service", "StudioDomain.Query.Service\StudioDomain.Query.Service.csproj", "{6B199F9E-91DC-41B1-8D5A-6B9283F86227}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioDomain.Shared", "StudioDomain.Shared\StudioDomain.Shared.csproj", "{1B7A6094-76FF-452A-9EA3-043036F794A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioDomain.Shared.Queries", "StudioDomain.Shared\StudioDomain.Shared.Queries.csproj", "{1B7A6094-76FF-452A-9EA3-043036F794A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartoonDomain.Command.Service", "CartoonDomain.Command.Service\CartoonDomain.Command.Service.csproj", "{C4C190A7-DC1B-41EB-BDB8-9A4629566C1B}"
 EndProject
@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartoonDomain.Shared.Commands", "CartoonDomain.Shared.Commands\CartoonDomain.Shared.Commands.csproj", "{2EA83BB5-5DF6-438D-B73E-5A82270208A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioDomain.Shared.Commands", "StudioDomain.Shared.Commands\StudioDomain.Shared.Commands.csproj", "{B1C2F556-5E39-48FE-BE85-76D0576BB419}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +72,14 @@ Global
 		{35D20228-5619-41D6-BFB6-DB00633A2AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35D20228-5619-41D6-BFB6-DB00633A2AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35D20228-5619-41D6-BFB6-DB00633A2AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA83BB5-5DF6-438D-B73E-5A82270208A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA83BB5-5DF6-438D-B73E-5A82270208A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA83BB5-5DF6-438D-B73E-5A82270208A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA83BB5-5DF6-438D-B73E-5A82270208A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1C2F556-5E39-48FE-BE85-76D0576BB419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1C2F556-5E39-48FE-BE85-76D0576BB419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1C2F556-5E39-48FE-BE85-76D0576BB419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1C2F556-5E39-48FE-BE85-76D0576BB419}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
