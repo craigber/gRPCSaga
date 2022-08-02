@@ -175,6 +175,10 @@ public class CartoonalogueController : ControllerBase
     [Route("Cartoon/Create")]
     public async Task<IActionResult> CreateCartoonAsync(CartoonCreateViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         try
         {
             var viewModelResponse = await _apiService.CreateCartoonAsync(viewModel);
@@ -215,6 +219,10 @@ public class CartoonalogueController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<IActionResult> CreateCartoonDetails(CartoonDetailsCreateViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         var viewModelResponse = await _apiService.CreateCartoonDetailsAsync(viewModel);
         if (viewModelResponse == null)
         {
@@ -309,6 +317,10 @@ public class CartoonalogueController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<IActionResult> CreateStudioAsync(StudioCreateViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         try
         { 
             var viewModelResponse = await _apiService.CreateStudioAsync(viewModel);
@@ -353,6 +365,10 @@ public class CartoonalogueController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public async Task<IActionResult> CreateCharacterAsync(CharacterCreateViewModel viewModel)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
         try
         {
             var viewModelResponse = await _apiService.CreateCharacterAsync(viewModel);
