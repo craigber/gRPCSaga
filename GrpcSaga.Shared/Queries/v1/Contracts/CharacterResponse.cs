@@ -2,7 +2,7 @@
 
 namespace CartoonDomain.Shared.Queries.v1.Contracts;
 
-[DataContract]
+[ProtoContract]
 public class CharacterResponse
 {
     [ProtoMember(1)]

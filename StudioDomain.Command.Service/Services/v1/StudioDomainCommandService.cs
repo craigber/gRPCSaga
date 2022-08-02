@@ -1,4 +1,5 @@
-﻿using ProtoBuf.Grpc;
+﻿using Grpc.Core;
+using ProtoBuf.Grpc;
 using StudioDomain.Command.Service.Data;
 using StudioDomain.Common.Data.Entities;
 using StudioDomain.Shared.Commands.v1.Contracts;
@@ -9,10 +10,12 @@ namespace StudioDomain.Command.Service.Services.v1;
 
 public class StudioDomainCommandService : IStudioDomainCommandService
 {
+    private readonly ILogger _logger;
     private readonly StudioCommandContext _context;
 
-    public StudioDomainCommandService(StudioCommandContext context)
+    public StudioDomainCommandService(ILogger logger, StudioCommandContext context)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -20,9 +23,12 @@ public class StudioDomainCommandService : IStudioDomainCommandService
     {
         if (request == null || request.Id <= 0)
         {
-            var correlationId = Guid.NewGuid();
-            // Log issue
-            throw new ArgumentNullException($"Id: {correlationId}");
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -45,12 +51,24 @@ public class StudioDomainCommandService : IStudioDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
         
@@ -58,9 +76,12 @@ public class StudioDomainCommandService : IStudioDomainCommandService
     {
         if (request == null || string.IsNullOrEmpty(request.Name))
         {
-            var correlationId = Guid.NewGuid();
-            // Log issue
-            throw new ArgumentNullException($"Id: {correlationId}");
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -87,12 +108,24 @@ public class StudioDomainCommandService : IStudioDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 }
