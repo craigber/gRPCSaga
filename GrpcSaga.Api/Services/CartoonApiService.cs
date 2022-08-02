@@ -136,9 +136,6 @@ public class CartoonApiService : ICartoonApiService
         return response;
     }
 
-
-    /////////////////////////////////////////////////////////////https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/error-handling
-
     private async Task<List<CharacterViewModel?>> InsertCharacterListAsync(List<CharacterCreateViewModel> characters, CartoonViewModel cartoon)
     {
         return null;

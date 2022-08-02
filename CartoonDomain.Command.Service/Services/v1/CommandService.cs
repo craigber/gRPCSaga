@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProtoBuf.Grpc;
+using Grpc.Core;
 using CartoonDomain.Shared.Commands.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Interfaces;
 using CartoonDomain.Service.Data;
@@ -9,12 +10,12 @@ namespace CartoonDomain.Service.Services.Commands.v1;
 
 public class CommandService : ICartoonDomainCommandService
 {
-    // TODO: https://docs.microsoft.com/en-us/dotnet/architecture/grpc-for-wcf-developers/error-handling
-
+    private readonly ILogger _logger;
     private readonly CartoonCommandContext _context;
 
-    public CommandService(CartoonCommandContext context)
+    public CommandService(ILogger logger, CartoonCommandContext context)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -22,9 +23,12 @@ public class CommandService : ICartoonDomainCommandService
     {
         if (request == null)
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -109,12 +113,24 @@ public class CommandService : ICartoonDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 
@@ -122,9 +138,12 @@ public class CommandService : ICartoonDomainCommandService
     {
         if (request == null)
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -159,12 +178,24 @@ public class CommandService : ICartoonDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
 
     }
@@ -173,9 +204,12 @@ public class CommandService : ICartoonDomainCommandService
     {
         if (request == null || string.IsNullOrEmpty(request.Name))
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -204,12 +238,24 @@ public class CommandService : ICartoonDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 
@@ -217,9 +263,12 @@ public class CommandService : ICartoonDomainCommandService
     {
         if (request == null)
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -253,12 +302,24 @@ public class CommandService : ICartoonDomainCommandService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 }

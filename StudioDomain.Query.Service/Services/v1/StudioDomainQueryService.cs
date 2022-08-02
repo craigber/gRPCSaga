@@ -1,4 +1,5 @@
-﻿using ProtoBuf.Grpc;
+﻿using Grpc.Core;
+using ProtoBuf.Grpc;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
 using StudioDomain.Service.Data;
@@ -9,9 +10,11 @@ namespace StudioDomain.Service.Services.v1;
 public class StudioDomainQueryService : IStudioDomainQueryService
 {
     private readonly StudioQueryContext _context;
+    private readonly ILogger _logger;
 
-    public StudioDomainQueryService(StudioQueryContext context)
+    public StudioDomainQueryService(ILogger logger, StudioQueryContext context)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -36,12 +39,24 @@ public class StudioDomainQueryService : IStudioDomainQueryService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 
@@ -49,9 +64,12 @@ public class StudioDomainQueryService : IStudioDomainQueryService
     {
         if (request.Id <= 0)
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -69,12 +87,24 @@ public class StudioDomainQueryService : IStudioDomainQueryService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 

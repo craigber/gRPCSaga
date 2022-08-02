@@ -10,10 +10,12 @@ namespace CartoonDomain.Query.Service.Services.v1;
 
 public class CartoonDomainQueryService : ICartoonDomainQueryService
 {
+    private readonly ILogger _logger;
     private readonly CartoonQueryContext _context;
 
-    public CartoonDomainQueryService(CartoonQueryContext context)
+    public CartoonDomainQueryService(ILogger logger, CartoonQueryContext context)
     {
+        _logger = logger;
         _context = context;
     }
 
@@ -21,9 +23,12 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
     {
         if (request.Id <= 0)
         {
-            var ex = new ArgumentNullException(nameof(request));
-            ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
-            throw ex;
+            var metadata = new Metadata
+            {
+                { "CorrelationId", Guid.NewGuid().ToString() }
+            };
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, nameof(request)), metadata);
         }
 
         try
@@ -41,12 +46,24 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+             _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 
@@ -71,12 +88,24 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
         }
         catch (Exception ex)
         {
-            if (!ex.Data.Contains("CorrelationId"))
+            string correlationId;
+            if (ex.Data.Contains("CorrelationId"))
             {
-                ex.Data.Add("CorrelationId", Guid.NewGuid().ToString());
+                correlationId = ex.Data["CorrelationId"].ToString();
             }
-            // Write to log
-            throw;
+            else
+            {
+                correlationId = Guid.NewGuid().ToString();
+                ex.Data.Add("CorrelationId", correlationId);
+            }
+            _logger.LogError(ex.Message, ex);
+
+            var metadata = new Metadata
+            {
+                { "CorrelationId", correlationId }
+            };
+
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message), metadata);
         }
     }
 
