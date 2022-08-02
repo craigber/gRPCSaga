@@ -13,7 +13,7 @@ public class CartoonDomainQueryService : ICartoonDomainQueryService
     private readonly ILogger _logger;
     private readonly CartoonQueryContext _context;
 
-    public CartoonDomainQueryService(ILogger logger, CartoonQueryContext context)
+    public CartoonDomainQueryService(ILogger<CartoonDomainQueryService> logger, CartoonQueryContext context)
     {
         _logger = logger;
         _context = context;

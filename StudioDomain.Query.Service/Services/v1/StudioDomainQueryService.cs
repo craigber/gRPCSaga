@@ -12,7 +12,7 @@ public class StudioDomainQueryService : IStudioDomainQueryService
     private readonly StudioQueryContext _context;
     private readonly ILogger _logger;
 
-    public StudioDomainQueryService(ILogger logger, StudioQueryContext context)
+    public StudioDomainQueryService(ILogger<StudioDomainQueryService> logger, StudioQueryContext context)
     {
         _logger = logger;
         _context = context;
