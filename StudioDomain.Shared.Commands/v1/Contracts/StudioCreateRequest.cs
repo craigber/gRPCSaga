@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.Runtime.Serialization;
 
 namespace StudioDomain.Shared.Commands.v1.Contracts;
 

@@ -1,7 +1,6 @@
 ﻿using Cartoonalogue.Api.ViewModels;
 using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Contracts;
-using ProtoBuf.Grpc.Client;
 using CartoonDomain.Shared.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
@@ -9,6 +8,7 @@ using StudioDomain.Shared.Commands.v1.Interfaces;
 using StudioDomain.Shared.Commands.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Interfaces;
 using Grpc.Net.Client;
+using ProtoBuf.Grpc.Client;
 
 namespace Cartoonalogue.Api.Services;
 
@@ -24,7 +24,6 @@ public class CartoonApiService : ICartoonApiService
     {
         _logger = logger;
 
-        // TODO: Instantiate the gRPC channels in Program.cs and then inject them here
         var CartoonQueryChannel = GrpcChannel.ForAddress("https://localhost:7227");
         _cartoonDomainQueryService = CartoonQueryChannel.CreateGrpcService<ICartoonDomainQueryService>();
 
