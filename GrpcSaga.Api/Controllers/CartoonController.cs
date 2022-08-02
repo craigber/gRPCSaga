@@ -6,7 +6,6 @@ namespace Cartoonalogue.Api.Controllers;
 
 [ApiController]
 [Route("api/v1")]
-//[Route("[controller]")]
 public class CartoonalogueController : ControllerBase
 {
 

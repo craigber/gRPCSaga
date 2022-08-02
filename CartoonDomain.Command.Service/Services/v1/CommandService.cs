@@ -13,7 +13,7 @@ public class CommandService : ICartoonDomainCommandService
     private readonly ILogger _logger;
     private readonly CartoonCommandContext _context;
 
-    public CommandService(ILogger logger, CartoonCommandContext context)
+    public CommandService(ILogger<CommandService> logger, CartoonCommandContext context)
     {
         _logger = logger;
         _context = context;

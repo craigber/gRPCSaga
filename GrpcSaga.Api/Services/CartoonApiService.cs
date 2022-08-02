@@ -386,7 +386,6 @@ public class CartoonApiService : ICartoonApiService
 
     public async Task<CartoonViewModel> GetCartoonByIdAsync(int id)
     {
-        // TODO: Change this to not return characters
         try
         {
             var cartoonRequest = new CartoonRequest

@@ -13,7 +13,7 @@ public class StudioDomainCommandService : IStudioDomainCommandService
     private readonly ILogger _logger;
     private readonly StudioCommandContext _context;
 
-    public StudioDomainCommandService(ILogger logger, StudioCommandContext context)
+    public StudioDomainCommandService(ILogger<StudioDomainCommandService> logger, StudioCommandContext context)
     {
         _logger = logger;
         _context = context;
