@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.Runtime.Serialization;
 
 namespace StudioDomain.Shared.Queries.v1.Contracts;
 

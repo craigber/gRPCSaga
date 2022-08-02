@@ -1,10 +1,8 @@
-﻿using Grpc.Core;
-using ProtoBuf.Grpc;
+﻿using ProtoBuf.Grpc;
 using StudioDomain.Shared.Queries.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Contracts;
 using StudioDomain.Service.Data;
 using StudioDomain.Common.Data.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace StudioDomain.Service.Services.v1;
 

@@ -1,5 +1,4 @@
-﻿
-using ProtoBuf.Grpc;
+﻿using ProtoBuf.Grpc;
 using System.ServiceModel;
 using CartoonDomain.Shared.Queries.v1.Contracts;
 

@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
 using StudioDomain.Service.Services.v1;
 using StudioDomain.Service.Data;
@@ -14,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
 
 // Add services to the container.
-builder.Services.AddGrpc();
 builder.Services.AddCodeFirstGrpc();
 builder.Services.AddDbContext<StudioQueryContext>(options =>
     options.UseSqlite("DataSource=Studios.db"));

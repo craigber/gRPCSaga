@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using System.Runtime.Serialization;
 
 namespace CartoonDomain.Shared.Commands.v1.Contracts;
 

@@ -1,5 +1,4 @@
 ﻿using ProtoBuf.Grpc;
-using Grpc.Core;
 using StudioDomain.Command.Service.Data;
 using StudioDomain.Common.Data.Entities;
 using StudioDomain.Shared.Commands.v1.Contracts;

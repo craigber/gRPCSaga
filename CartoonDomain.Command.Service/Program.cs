@@ -1,13 +1,8 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using ProtoBuf.Grpc.Server;
 using CartoonDomain.Service.Services.Commands.v1;
 using CartoonDomain.Command.Service.Data;
 using CartoonDomain.Service.Data;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddGrpc();
 builder.Services.AddCodeFirstGrpc();
 builder.Services.AddDbContext<CartoonCommandContext>(options =>
     options.UseSqlite("DataSource=Cartoons.db"));
