@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
 using StudioDomain.Command.Service.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
+builder.Services.AddCodeFirstGrpcReflection();
 builder.Services.AddDbContext<StudioCommandContext>(options =>
     options.UseSqlite("DataSource=Studios.db"));
 
@@ -33,6 +29,7 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<StudioDomainCommandService>();
+    endpoints.MapCodeFirstGrpcReflectionService();
 });
 
 // Configure the HTTP request pipeline.

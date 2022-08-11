@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddCodeFirstGrpc();
+builder.Services.AddCodeFirstGrpcReflection();
 builder.Services.AddDbContext<StudioQueryContext>(options =>
     options.UseSqlite("DataSource=Studios.db"));
 
@@ -27,6 +28,7 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<StudioDomainQueryService>();
+    endpoints.MapCodeFirstGrpcReflectionService();
 });
 
 // Configure the HTTP request pipeline.
