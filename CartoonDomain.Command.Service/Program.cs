@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddCodeFirstGrpc();
+builder.Services.AddCodeFirstGrpcReflection();
 builder.Services.AddDbContext<CartoonCommandContext>(options =>
     options.UseSqlite("DataSource=Cartoons.db"));
 
@@ -31,6 +32,7 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGrpcService<CommandService>();
+    endpoints.MapCodeFirstGrpcReflectionService();
 });
 
 // Configure the HTTP request pipeline.
