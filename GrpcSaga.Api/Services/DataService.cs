@@ -1,5 +1,4 @@
-﻿namespace Cartoonalogue.Api.Services;
-using CartoonDomain.Shared.Queries.v1.Contracts;
+﻿using CartoonDomain.Shared.Queries.v1.Contracts;
 using CartoonDomain.Shared.Commands.v1.Contracts;
 using CartoonDomain.Shared.v1.Interfaces;
 using StudioDomain.Shared.Queries.v1.Interfaces;
@@ -11,6 +10,8 @@ using Grpc.Net.Client;
 using ProtoBuf.Grpc.Client;
 using Cartoonalogue.Api.ViewModels;
 
+namespace Cartoonalogue.Api.Services;
+
 public class DataService : IDataService
 {
     private readonly ICartoonDomainQueryService _cartoonDomainQueryService;
@@ -19,10 +20,10 @@ public class DataService : IDataService
     private readonly IStudioDomainCommandService _studioDomainCommandService;
 
     public DataService(
-        ICartoonDomainQueryService? cartoonDomainQueryService,
-        ICartoonDomainCommandService? cartoonDomainCommandService,
-        IStudioDomainQueryService? studioDomainQueryService,
-        IStudioDomainCommandService? studioDomainCommandService)
+        ICartoonDomainQueryService? cartoonDomainQueryService = null,
+        ICartoonDomainCommandService? cartoonDomainCommandService = null,
+        IStudioDomainQueryService? studioDomainQueryService = null,
+        IStudioDomainCommandService? studioDomainCommandService = null)
     {
         // This is a kludge to handle these services but I have not yet figured out how to
         // instantiate the gRPC services in program.cs and inject them here. By instantiating 

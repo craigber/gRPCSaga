@@ -18,7 +18,7 @@ This sample application is a catalog of cartoons -- a Cartoonalogue.
 4. Select Multiple startup projects
 5. Set the following projects to Start: Cartoonalogue.Api, CartoonDomain.Command.Service, CartoonDomain.Query.Service, StudioDomain.Command.Service, StudioDomain.Query.Service
 6. Click OK
-7. Build and run the solution
+7. Build and run the solution. Navigate to https://localhost:7040/ to get the Swagger page.
 
 ## Included VS Projects
 
@@ -26,6 +26,7 @@ The sample is split into several projects:
 
 - Cartoonalogue
   - Cartoonalogue.Api: An ASP.Net Core Api project that provides a UI via a Swagger page. It makes REST calls from the browser to controllers. When you launch the solution inside Visual Studio, a Swagger page is presented where you can Try Out the API.
+  - Catoonalogue.Test: Simple unit tests to validation some of the trickier things such as Saga compensation.
 - CartoonDomain
   - CartoonDomain.Query.Service: A gRPC server for CQRS queries into the Cartoon Domain
   - CartoonDomain.Command.Service: A gRPC server for CQRS commands into the Cartoon Domain
